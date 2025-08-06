@@ -6,6 +6,7 @@
     <title>📱 SAPRAS Digital - Aplikasi Web Inventaris</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
         
@@ -14,20 +15,22 @@
         }
         
         .gradient-bg {
-            background: linear-gradient(135deg, #1e40af 0%, #7c3aed 50%, #059669 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #4facfe 100%);
+            min-height: 100vh;
         }
         
         .app-container {
-            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-            border-radius: 20px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(248,250,252,0.9) 100%);
+            border-radius: 24px;
+            box-shadow: 0 32px 64px -12px rgba(0, 0, 0, 0.25);
             overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
         }
         
         .app-header {
-            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-            padding: 1.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            padding: 2rem;
             color: white;
             position: relative;
             overflow: hidden;
@@ -50,13 +53,15 @@
         }
         
         .stats-card {
-            background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%);
-            border: 1px solid #e0f2fe;
-            border-radius: 12px;
-            padding: 1.5rem;
-            transition: all 0.3s ease;
+            background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(240,249,255,0.8) 100%);
+            border: 2px solid rgba(224,242,254,0.5);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: all 0.4s ease;
             position: relative;
             overflow: hidden;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
         }
         
         .stats-card::before {
@@ -64,9 +69,9 @@
             position: absolute;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 4px;
-            background: linear-gradient(90deg, #3b82f6, #10b981);
+            width: 6px;
+            height: 100%;
+            background: var(--border-color, linear-gradient(180deg, #3b82f6, #10b981));
         }
         
         .stats-card:hover {
@@ -75,176 +80,133 @@
         }
         
         .form-section {
-            background: linear-gradient(135deg, #ffffff 0%, #fefefe 100%);
-            border: 2px solid #f1f5f9;
-            border-radius: 16px;
-            padding: 2rem;
-            margin-bottom: 2rem;
+            background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(254,254,254,0.9) 100%);
+            border: 2px solid rgba(241,245,249,0.6);
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin-bottom: 2.5rem;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
         }
         
         .input-field {
             width: 100%;
-            padding: 0.75rem 1rem;
+            padding: 1rem 1.25rem;
             border: 2px solid #e2e8f0;
-            border-radius: 8px;
+            border-radius: 12px;
             font-size: 0.875rem;
-            transition: all 0.3s ease;
-            background: white;
+            transition: all 0.4s ease;
+            background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(5px);
+        }
+        
+        .input-field:hover {
+            border-color: #cbd5e1;
+            background: rgba(255,255,255,0.95);
         }
         
         .input-field:focus {
             outline: none;
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15);
+            background: white;
+            transform: translateY(-1px);
         }
         
         .btn-primary {
-            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
+            padding: 1rem 2rem;
+            border-radius: 12px;
             font-weight: 600;
             border: none;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s ease;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+            font-size: 0.95rem;
         }
         
         .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+            background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
         }
         
         .btn-secondary {
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
+            padding: 0.75rem 1.25rem;
+            border-radius: 10px;
             font-size: 0.875rem;
             font-weight: 500;
             border: none;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.4s ease;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+        
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
         }
         
         .btn-danger {
             background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
             color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
+            padding: 0.75rem 1.25rem;
+            border-radius: 10px;
             font-size: 0.875rem;
             font-weight: 500;
             border: none;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.4s ease;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
         }
         
-        .table-container {
-            background: white;
-            border-radius: 12px;
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+        }
+        
+        .inventory-table {
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            border: 1px solid #e2e8f0;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.3);
         }
         
         .table-header {
-            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-            padding: 1rem;
-            border-bottom: 2px solid #e2e8f0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 1.5rem;
+            font-weight: 600;
+            color: white;
+            border-bottom: none;
         }
         
         .table-row {
-            border-bottom: 1px solid #f1f5f9;
-            transition: all 0.2s ease;
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(243,244,246,0.5);
+            transition: all 0.3s ease;
+            background: rgba(255,255,255,0.7);
         }
         
         .table-row:hover {
-            background: #f8fafc;
+            background: rgba(249,250,251,0.9);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         }
         
-        .badge {
-            padding: 0.25rem 0.75rem;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-        
-        .badge-success {
-            background: #dcfce7;
-            color: #166534;
-        }
-        
-        .badge-warning {
-            background: #fef3c7;
-            color: #92400e;
-        }
-        
-        .badge-danger {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-        
-        .badge-primary {
-            background: #dbeafe;
-            color: #1e40af;
-        }
-        
-        .logo-upload {
-            border: 3px dashed #cbd5e1;
-            border-radius: 12px;
-            padding: 2rem;
-            text-align: center;
-            background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-        
-        .logo-upload:hover {
-            border-color: #3b82f6;
-            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
-        }
-        
-        .logo-upload.dragover {
-            border-color: #10b981;
-            background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
-        }
-        
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
-        
-        .modal.active {
-            opacity: 1;
-            visibility: visible;
-        }
-        
-        .modal-content {
+        .barcode-container {
             background: white;
-            border-radius: 16px;
-            padding: 2rem;
-            max-width: 500px;
-            width: 90%;
-            max-height: 90vh;
-            overflow-y: auto;
-            transform: scale(0.9);
-            transition: all 0.3s ease;
-        }
-        
-        .modal.active .modal-content {
-            transform: scale(1);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 2px dashed #d1d5db;
+            text-align: center;
+            margin-top: 1rem;
         }
         
         .notification {
@@ -254,10 +216,10 @@
             padding: 1rem 1.5rem;
             border-radius: 8px;
             color: white;
-            font-weight: 600;
-            z-index: 1001;
+            font-weight: 500;
+            z-index: 1000;
             transform: translateX(400px);
-            transition: all 0.3s ease;
+            transition: transform 0.3s ease;
         }
         
         .notification.show {
@@ -272,179 +234,200 @@
             background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
         }
         
-        .fade-in {
-            animation: fadeIn 0.6s ease-out;
+        .label-item {
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 12px;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            break-inside: avoid;
+            page-break-inside: avoid;
         }
         
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        .label-small {
+            width: 6cm;
+            height: 2.5cm;
+            font-size: 10px;
         }
         
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,.3);
-            border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 1s ease-in-out infinite;
+        .label-medium {
+            width: 8cm;
+            height: 3cm;
+            font-size: 11px;
         }
         
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        .label-large {
+            width: 10cm;
+            height: 4cm;
+            font-size: 12px;
         }
         
-        .edit-mode {
-            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-            border: 2px solid #f59e0b;
+        .label-extra {
+            width: 12cm;
+            height: 5cm;
+            font-size: 13px;
         }
         
-        .edit-mode .app-header {
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        .label-grid-2 {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5cm;
         }
         
-        .btn-edit-active {
-            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%) !important;
+        .label-grid-3 {
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.4cm;
         }
         
-        .btn-edit-active span:first-child::after {
-            content: ' ❌';
+        .label-grid-4 {
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.3cm;
         }
         
-        .save-success {
-            animation: saveSuccess 0.6s ease-out;
-        }
-        
-        @keyframes saveSuccess {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
-            100% { transform: scale(1); }
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            
+            #labelPreview, #labelPreview * {
+                visibility: visible;
+            }
+            
+            #labelPreview {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                background: white !important;
+                border: none !important;
+                box-shadow: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            
+            .label-item {
+                border: 1px solid #000 !important;
+                margin: 0 !important;
+            }
         }
     </style>
 </head>
-<body class="bg-gradient-to-br from-gray-50 to-blue-50 min-h-screen">
-    <!-- Main App Container -->
-    <div class="container mx-auto px-4 py-8">
-        <div class="app-container max-w-7xl mx-auto">
-            <!-- App Header -->
-            <div class="app-header relative">
-                <div class="flex items-center justify-between relative z-10">
-                    <div class="flex items-center space-x-4">
-                        <div id="schoolLogo" class="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center text-2xl">
-                            🏫
+<body class="gradient-bg min-h-screen p-4">
+    <div class="max-w-6xl mx-auto">
+        <div class="app-container">
+            <!-- Header -->
+            <div class="app-header relative z-10">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <div id="headerLogo" class="mr-4 hidden">
+                            <img src="" alt="Logo SMK Nasional Bandung" class="w-16 h-16 object-contain rounded-lg bg-white/20 p-2">
                         </div>
                         <div>
-                            <h1 class="text-2xl lg:text-3xl font-bold">SAPRAS DIGITAL</h1>
-                            <p class="text-blue-100 text-sm lg:text-base">SMK Nasional Bandung - Sistem Inventaris</p>
+                            <h1 class="text-3xl font-bold mb-2 bg-gradient-to-r from-white via-blue-100 to-pink-100 bg-clip-text text-transparent">📱 SAPRAS DIGITAL</h1>
+                            <h2 class="text-xl font-semibold mb-2 text-yellow-200">SMK NASIONAL BANDUNG</h2>
+                            <p class="text-white/90 text-base">Sistem Manajemen Inventaris Sarana & Prasarana</p>
                         </div>
                     </div>
                     <div class="text-right">
-                        <div class="text-sm text-blue-100">Versi 1.0</div>
-                        <div class="text-xs text-blue-200" id="currentDate"></div>
+                        <div class="text-sm text-blue-100">Tanggal Hari Ini</div>
+                        <div class="text-lg font-semibold" id="currentDate"></div>
                     </div>
                 </div>
             </div>
 
-            <!-- App Content -->
-            <div class="p-6 lg:p-8">
-                <!-- Statistics Dashboard -->
-                <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6 mb-8">
-                    <div class="stats-card">
+            <div class="p-6">
+                <!-- Tips Card -->
+                <div id="tipsCard" class="form-section mb-8" style="background: linear-gradient(135deg, rgba(59,130,246,0.1) 0%, rgba(147,51,234,0.1) 100%); border: 2px solid rgba(59,130,246,0.2);">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="flex items-center">
+                            <div class="text-2xl mr-3">💡</div>
+                            <h3 class="text-lg font-bold text-blue-800">Tips Penggunaan SAPRAS Digital</h3>
+                        </div>
+                        <button onclick="closeTips()" class="text-gray-400 hover:text-gray-600 text-xl font-bold">&times;</button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
+                        <div class="bg-white/50 p-3 rounded-lg">
+                            <div class="font-semibold text-blue-700 mb-2">🚀 Memulai</div>
+                            <p class="text-gray-700">Mulai dengan menambah barang pertama menggunakan form di bawah. Kode akan otomatis dibuat!</p>
+                        </div>
+                        <div class="bg-white/50 p-3 rounded-lg">
+                            <div class="font-semibold text-green-700 mb-2">📝 Input Data</div>
+                            <p class="text-gray-700">Gunakan nama yang spesifik dan pilih kategori yang tepat untuk memudahkan pencarian.</p>
+                        </div>
+                        <div class="bg-white/50 p-3 rounded-lg">
+                            <div class="font-semibold text-purple-700 mb-2">🔍 Pencarian</div>
+                            <p class="text-gray-700">Gunakan filter kategori dan lokasi untuk menemukan barang dengan cepat.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Statistics Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-10">
+                    <div class="stats-card" style="--border-color: linear-gradient(180deg, #3b82f6, #1d4ed8);">
                         <div class="flex items-center justify-between">
                             <div>
-                                <p class="text-sm font-medium text-gray-600">Total Barang</p>
+                                <p class="text-sm text-gray-600 mb-2 font-medium">Total Barang</p>
                                 <p class="text-3xl font-bold text-blue-600" id="totalItems">0</p>
                             </div>
-                            <div class="text-4xl">📦</div>
+                            <div class="text-4xl bg-blue-100 p-3 rounded-full">📦</div>
                         </div>
                     </div>
                     
-                    <div class="stats-card">
+                    <div class="stats-card" style="--border-color: linear-gradient(180deg, #10b981, #059669);">
                         <div class="flex items-center justify-between">
                             <div>
-                                <p class="text-sm font-medium text-gray-600">Kategori</p>
-                                <p class="text-3xl font-bold text-green-600" id="totalCategories">0</p>
+                                <p class="text-sm text-gray-600 mb-2 font-medium">Stok Tersedia</p>
+                                <p class="text-3xl font-bold text-green-600" id="availableStock">0</p>
                             </div>
-                            <div class="text-4xl">🏷️</div>
+                            <div class="text-4xl bg-green-100 p-3 rounded-full">✅</div>
                         </div>
                     </div>
                     
-                    <div class="stats-card">
+                    <div class="stats-card" style="--border-color: linear-gradient(180deg, #f59e0b, #d97706);">
                         <div class="flex items-center justify-between">
                             <div>
-                                <p class="text-sm font-medium text-gray-600">Kondisi Baik</p>
-                                <p class="text-3xl font-bold text-emerald-600" id="goodCondition">0</p>
+                                <p class="text-sm text-gray-600 mb-2 font-medium">Stok Rendah</p>
+                                <p class="text-3xl font-bold text-yellow-600" id="lowStock">0</p>
                             </div>
-                            <div class="text-4xl">✅</div>
+                            <div class="text-4xl bg-yellow-100 p-3 rounded-full">⚠️</div>
                         </div>
                     </div>
                     
-                    <div class="stats-card">
+                    <div class="stats-card" style="--border-color: linear-gradient(180deg, #8b5cf6, #7c3aed);">
                         <div class="flex items-center justify-between">
                             <div>
-                                <p class="text-sm font-medium text-gray-600">Perlu Perbaikan</p>
-                                <p class="text-3xl font-bold text-amber-600" id="needRepair">0</p>
+                                <p class="text-sm text-gray-600 mb-2 font-medium">Nilai Total</p>
+                                <p class="text-3xl font-bold text-purple-600" id="totalValue">Rp 0</p>
                             </div>
-                            <div class="text-4xl">⚠️</div>
-                        </div>
-                    </div>
-                    
-                    <div class="stats-card">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-sm font-medium text-gray-600">Total Nilai Aset</p>
-                                <p class="text-2xl font-bold text-purple-600" id="totalValue">Rp 0</p>
-                            </div>
-                            <div class="text-4xl">💰</div>
+                            <div class="text-4xl bg-purple-100 p-3 rounded-full">💰</div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Logo Upload Section -->
-                <div class="form-section mb-8">
-                    <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
-                        <span class="text-2xl mr-3">📸</span>
-                        Upload Logo Sekolah
-                    </h2>
-                    
-                    <!-- Current Logo Display -->
-                    <div id="currentLogoDisplay" class="mb-4 text-center hidden">
-                        <div class="inline-block p-4 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
-                            <img id="currentLogoImg" src="" alt="Logo Sekolah" class="max-w-32 max-h-32 object-contain mx-auto">
-                            <p class="text-sm text-gray-600 mt-2">Logo saat ini</p>
-                            <button onclick="removeLogo()" class="mt-2 px-3 py-1 bg-red-500 text-white text-xs rounded hover:bg-red-600">
-                                🗑️ Hapus Logo
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <!-- Upload Area -->
-                    <div class="logo-upload" id="logoUpload">
-                        <div class="text-4xl mb-4">🖼️</div>
-                        <p class="text-gray-600 font-medium mb-3">📁 KLIK DI SINI UNTUK PILIH LOGO</p>
-                        <p class="text-sm text-gray-500 mb-3">Atau seret & lepas file gambar di area ini</p>
-                        
-                        <!-- Visible Upload Button -->
-                        <button type="button" onclick="document.getElementById('logoInput').click()" class="btn-primary mb-3">
-                            📂 Pilih File Logo
-                        </button>
-                        
-                        <div class="text-xs text-gray-400">
-                            ✅ Format: PNG, JPG, JPEG, GIF<br>
-                            ✅ Ukuran maksimal: 5MB<br>
-                            ✅ Bisa juga paste dengan Ctrl+V
+                <div class="form-section">
+                    <h2 class="text-2xl font-bold bg-gradient-to-r from-green-600 via-blue-600 to-purple-600 bg-clip-text text-transparent mb-6">🏫 Pengaturan Logo Sekolah</h2>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div class="bg-gradient-to-br from-blue-50 to-purple-50 p-6 rounded-xl border-2 border-blue-200">
+                            <h3 class="text-lg font-bold text-blue-800 mb-4">📤 Upload Logo</h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Pilih File Logo</label>
+                                    <input type="file" id="logoUpload" accept="image/*" class="input-field" onchange="handleLogoUpload(event)">
+                                    <p class="text-xs text-gray-500 mt-2">Format: JPG, PNG, GIF (Maks. 2MB)</p>
+                                </div>
+                                <button onclick="removeLogo()" class="bg-gradient-to-r from-red-500 to-pink-500 text-white px-4 py-2 rounded-lg font-semibold hover:shadow-lg transition-all text-sm">
+                                    🗑️ Hapus Logo
+                                </button>
+                            </div>
                         </div>
                         
-                        <input type="file" id="logoInput" accept="image/*,.png,.jpg,.jpeg,.gif" class="hidden">
-                    </div>
-                    
-                    <!-- Upload Progress -->
-                    <div id="uploadProgress" class="mt-4 hidden">
-                        <div class="bg-blue-100 border border-blue-300 rounded-lg p-3">
-                            <div class="flex items-center">
-                                <div class="loading mr-3"></div>
-                                <span class="text-blue-700 font-medium">Mengupload logo...</span>
+                        <div class="bg-gradient-to-br from-green-50 to-blue-50 p-6 rounded-xl border-2 border-green-200">
+                            <h3 class="text-lg font-bold text-green-800 mb-4">👁️ Preview Logo</h3>
+                            <div id="logoPreview" class="bg-white border-2 border-dashed border-gray-300 rounded-lg p-6 text-center min-h-[120px] flex items-center justify-center">
+                                <div class="text-gray-400">
+                                    <div class="text-4xl mb-2">🏫</div>
+                                    <p class="text-sm">Logo akan muncul di sini</p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -452,126 +435,108 @@
 
                 <!-- Add Item Form -->
                 <div class="form-section">
-                    <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center">
-                        <span class="text-2xl mr-3">➕</span>
-                        Tambah Barang Baru
-                    </h2>
-                    
-                    <form id="itemForm" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <h2 class="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-6">➕ Tambah Barang Baru</h2>
+                    <form id="addItemForm" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Nama Barang *</label>
-                            <input type="text" id="itemName" class="input-field" placeholder="Contoh: Laptop Dell Inspiron 15" required>
+                            <label class="block text-sm font-bold text-gray-800 mb-3">Nama Barang</label>
+                            <input type="text" id="itemName" class="input-field" placeholder="Masukkan nama barang" required>
                         </div>
                         
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Kategori *</label>
+                            <label class="block text-sm font-bold text-gray-800 mb-3">Kategori</label>
                             <select id="itemCategory" class="input-field" required>
                                 <option value="">Pilih Kategori</option>
-                                <option value="ELK">ELK - Elektronik & IT</option>
-                                <option value="EKL">EKL - Elektronik & Kelistrikan</option>
-                                <option value="MBL">MBL - Mebel & Furniture</option>
-                                <option value="OLR">OLR - Olahraga & Kesehatan</option>
-                                <option value="KDR">KDR - Kendaraan & Transportasi</option>
-                                <option value="ATK">ATK - Alat Tulis & Kantor</option>
-                                <option value="KBN">KBN - Kebersihan & Maintenance</option>
-                                <option value="LAB">LAB - Laboratorium & Praktikum</option>
-                                <option value="PRP">PRP - Perpustakaan & Media</option>
-                                <option value="KTR">KTR - Keamanan & Ketertiban</option>
-                                <option value="MSK">MSK - Musik & Seni</option>
-                                <option value="DPR">DPR - Dapur & Konsumsi</option>
-                                <option value="KSH">KSH - Kesehatan & P3K</option>
-                                <option value="BNG">BNG - Bangunan & Infrastruktur</option>
-                                <option value="TXT">TXT - Tekstil & Pakaian</option>
-                                <option value="AGR">AGR - Pertanian & Kebun</option>
                                 <option value="PPU">PPU - Peralatan Praktek Umum</option>
                                 <option value="PPK">PPK - Peralatan Praktek Kejuruan</option>
                                 <option value="AKB">AKB - Alat Kebersihan</option>
-                                <option value="AK3">AK3 - Alat Keamanan & K3</option>
+                                <option value="AKK">AKK - Alat Keamanan & K3</option>
                                 <option value="ABI">ABI - Aset Bangunan Infrastruktur</option>
-                                <option value="PUS">PUS - Perpustakaan</option>
+                                <option value="PST">PST - Perpustakaan</option>
                                 <option value="MPI">MPI - Mading Papan Informasi</option>
+                                <option value="Elektronik">Elektronik</option>
+                                <option value="Furniture">Furniture</option>
+                                <option value="Alat Tulis">Alat Tulis</option>
+                                <option value="Peralatan">Peralatan</option>
+                                <option value="Lainnya">Lainnya</option>
                             </select>
                         </div>
                         
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Lokasi *</label>
+                            <label class="block text-sm font-bold text-gray-800 mb-3">Jumlah</label>
+                            <input type="number" id="itemQuantity" class="input-field" placeholder="0" min="1" required>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-bold text-gray-800 mb-3">Harga Satuan (Rp)</label>
+                            <input type="number" id="itemPrice" class="input-field" placeholder="0" min="0" required>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-bold text-gray-800 mb-3">Lokasi</label>
                             <select id="itemLocation" class="input-field" required>
                                 <option value="">Pilih Lokasi</option>
-                                <option value="LAB">LAB - Laboratorium</option>
-                                <option value="LAB-MPLB">LAB-MPLB - Lab. Komputer MPLB</option>
-                                <option value="LAB-DKV">LAB-DKV - Lab. Komputer DKV</option>
-                                <option value="LAB-TJKT">LAB-TJKT - Lab. Komputer TJKT</option>
+                                <option value="RKS">RKS - Ruang Kepala Sekolah</option>
                                 <option value="RGR">RGR - Ruang Guru</option>
-                                <option value="KTR">KTR - Kantor</option>
-                                <option value="KLS">KLS - Ruang Kelas</option>
-                                <option value="X-DKV">X-DKV - R. Kelas X-DKV</option>
-                                <option value="XI-DKV">XI-DKV - R. Kelas XI-DKV</option>
-                                <option value="XII-DKV">XII-DKV - R. Kelas XII-DKV</option>
-                                <option value="X-TJKT">X-TJKT - R. Kelas X-TJKT</option>
-                                <option value="XI-TJKT">XI-TJKT - R. Kelas XI-TJKT</option>
-                                <option value="XII-TJKT">XII-TJKT - R. Kelas XII-TJKT</option>
-                                <option value="X-MPLB">X-MPLB - R. Kelas X-MPLB</option>
-                                <option value="XI-MPLB">XI-MPLB - R. Kelas XI-MPLB</option>
-                                <option value="XII-MPLB">XII-MPLB - R. Kelas XII-MPLB</option>
-                                <option value="PRP">PRP - Perpustakaan</option>
-                                <option value="DPR">DPR - Ruang Dapur</option>
-                                <option value="GDG">GDG - R. Gudang</option>
-                                <option value="AUL">AUL - Aula</option>
-                                <option value="LPG">LPG - Lapangan</option>
-                                <option value="RKR">RKR - Ruang Kreatifitas</option>
-                                <option value="MSH">MSH - Ruang Musholah</option>
-                                <option value="UKS">UKS - Ruang UKS</option>
-                                <option value="BKK">BKK - Ruang BKK</option>
-                                <option value="SL1">SL1 - Ruang Selasar Lt 01</option>
-                                <option value="SL2">SL2 - Ruang Selasar Lt 02</option>
-                                <option value="OFC">OFC - Ruang Office</option>
-                                <option value="POD">POD - R. Podcast Teffa</option>
-                                <option value="PRC">PRC - R. Percetakan Teffa</option>
-                                <option value="VID">VID - R. Video dan Fotography Teffa</option>
-                                <option value="KMT">KMT - R. K-Mart Teffa</option>
-                                <option value="AUL">AUL - Ruang Aula</option>
-                                <option value="WD1">WD1 - Ruang Tempat Wudhu Lt1</option>
-                                <option value="WD2">WD2 - Ruang Wudhu Lt 2</option>
-                                <option value="OSS">OSS - Ruang OSIS</option>
-                                <option value="TMU">TMU - Ruang Tamu</option>
-                                <option value="RCP">RCP - Ruang Resepsion</option>
-                                <option value="TS1">TS1 - Ruang Toilet Siswa</option>
-                                <option value="TS2">TS2 - Ruang Toilet Siswi</option>
-                                <option value="GD1">GD1 - Ruang Gudang 1</option>
-                                <option value="GD2">GD2 - Ruang Gudang 2</option>
-                                <option value="TGP">TGP - Ruang Toilet Guru Pria</option>
-                                <option value="TGW">TGW - Ruang Toilet Guru Putri</option>
-                                <option value="TPP">TPP - Ruang Toilet Perpus</option>
+                                <option value="RTU">RTU - Ruang Tata Usaha</option>
+                                <option value="RST">RST - Ruang Staf</option>
+                                <option value="RTL">RTL - Ruang Toilet</option>
+                                <option value="RDP">RDP - Ruang Dapur</option>
+                                <option value="RGD">RGD - Ruang Gudang</option>
+                                <option value="KLS-X-DKV">KLS-X-DKV - Kelas X DKV</option>
+                                <option value="KLS-XI-DKV">KLS-XI-DKV - Kelas XI DKV</option>
+                                <option value="KLS-XII-DKV">KLS-XII-DKV - Kelas XII DKV</option>
+                                <option value="KLS-X-TJKT">KLS-X-TJKT - Kelas X TJKT</option>
+                                <option value="KLS-XI-TJKT">KLS-XI-TJKT - Kelas XI TJKT</option>
+                                <option value="KLS-XII-TJKT">KLS-XII-TJKT - Kelas XII TJKT</option>
+                                <option value="KLS-X-MPLB">KLS-X-MPLB - Kelas X MPLB</option>
+                                <option value="KLS-XI-MPLB">KLS-XI-MPLB - Kelas XI MPLB</option>
+                                <option value="KLS-XII-MPLB">KLS-XII-MPLB - Kelas XII MPLB</option>
+                                <option value="LAB">LAB - Laboratorium</option>
+                                <option value="PST">PST - Perpustakaan</option>
+                                <option value="RMU">RMU - Ruang Musholah</option>
+                                <option value="RUK">RUK - Ruang UKS</option>
+                                <option value="RBK">RBK - Ruang BKK</option>
+                                <option value="RSL1">RSL1 - Ruang Selasar Lt 01</option>
+                                <option value="RSL2">RSL2 - Ruang Selasar Lt.02</option>
+                                <option value="ROF">ROF - Ruang Office</option>
+                                <option value="RPT">RPT - R. Podcast Teffa</option>
+                                <option value="RCT">RCT - R. Percetakan Teffa</option>
+                                <option value="RVF">RVF - R. Video dan Fotography Teffa</option>
+                                <option value="RKM">RKM - R. K-Mart Teffa</option>
+                                <option value="RAU">RAU - Ruang Aula</option>
+                                <option value="RWL1">RWL1 - Ruang Tempat Wudhu Lt1</option>
+                                <option value="RWL2">RWL2 - Ruang Wudhu Lt 2</option>
+                                <option value="ROS">ROS - Ruang OSIS</option>
+                                <option value="RTM">RTM - Ruang Tamu</option>
+                                <option value="RRC">RRC - Ruang Resepsion</option>
+                                <option value="RTS">RTS - Ruang Toilet Siswa</option>
+                                <option value="RTW">RTW - Ruang Toilet Siswi</option>
+                                <option value="RGD1">RGD1 - Ruang Gudang 1</option>
+                                <option value="RGD2">RGD2 - Ruang Gudang 2</option>
+                                <option value="RTGP">RTGP - Ruang Toilet Guru Pria</option>
+                                <option value="RTGW">RTGW - Ruang Toilet Guru Putri</option>
+                                <option value="RTPS">RTPS - Ruang Toilet Perpus</option>
                             </select>
                         </div>
                         
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Kondisi *</label>
+                            <label class="block text-sm font-bold text-gray-800 mb-3">Kondisi</label>
                             <select id="itemCondition" class="input-field" required>
                                 <option value="">Pilih Kondisi</option>
                                 <option value="Baik">Baik</option>
-                                <option value="Rusak Ringan">Rusak Ringan</option>
-                                <option value="Rusak Berat">Rusak Berat</option>
+                                <option value="Cukup">Cukup</option>
+                                <option value="Rusak">Rusak</option>
                             </select>
                         </div>
                         
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Jumlah</label>
-                            <input type="number" id="itemQuantity" class="input-field" placeholder="1" min="1" value="1">
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Harga Satuan (Rp) *</label>
-                            <input type="number" id="itemPrice" class="input-field" placeholder="0" min="0" step="1000" required>
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Sumber Dana *</label>
-                            <select id="itemFunding" class="input-field" required>
+                            <label class="block text-sm font-bold text-gray-800 mb-3">Sumber Dana</label>
+                            <select id="itemFundingSource" class="input-field" required>
                                 <option value="">Pilih Sumber Dana</option>
-                                <option value="APBD">APBD - Anggaran Pendapatan Belanja Daerah</option>
+                                <option value="APBD">APBD - Anggaran Pendapatan dan Belanja Daerah</option>
+                                <option value="APBN">APBN - Anggaran Pendapatan dan Belanja Negara</option>
                                 <option value="BOS">BOS - Bantuan Operasional Sekolah</option>
-                                <option value="APBN">APBN - Anggaran Pendapatan Belanja Negara</option>
+                                <option value="BOSDA">BOSDA - Bantuan Operasional Sekolah Daerah</option>
                                 <option value="Hibah">Hibah - Bantuan/Sumbangan</option>
                                 <option value="Swadaya">Swadaya - Dana Mandiri Sekolah</option>
                                 <option value="CSR">CSR - Corporate Social Responsibility</option>
@@ -580,467 +545,353 @@
                             </select>
                         </div>
                         
-                        <div>
+                        <div class="md:col-span-2 lg:col-span-3">
                             <label class="block text-sm font-medium text-gray-700 mb-2">Keterangan</label>
-                            <input type="text" id="itemNotes" class="input-field" placeholder="Keterangan tambahan (opsional)">
+                            <textarea id="itemDescription" class="input-field" rows="3" placeholder="Deskripsi atau catatan tambahan"></textarea>
                         </div>
                         
-                        <div class="md:col-span-2 lg:col-span-3 flex justify-end">
-                            <button type="submit" class="btn-primary flex items-center space-x-2">
-                                <span>Tambah Barang</span>
-                                <span id="addLoading" class="loading hidden"></span>
+                        <div class="md:col-span-2 lg:col-span-3">
+                            <button type="submit" class="btn-primary">
+                                ➕ Tambah Barang
                             </button>
                         </div>
                     </form>
                 </div>
 
-                <!-- Search and Filter Section -->
+                <!-- Search and Filter -->
                 <div class="form-section">
-                    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
-                        <h2 class="text-xl font-bold text-gray-800 flex items-center">
-                            <span class="text-2xl mr-3">📋</span>
-                            Daftar Inventaris
-                        </h2>
-                        
-                        <div class="flex flex-col sm:flex-row gap-3">
-                            <button id="editModeBtn" onclick="toggleEditMode()" class="btn-secondary flex items-center space-x-2" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
-                                <span>✏️</span>
-                                <span>Mode Edit</span>
-                            </button>
-                            <button id="saveDataBtn" onclick="saveAllData()" class="btn-secondary flex items-center space-x-2" style="background: linear-gradient(135deg, #059669 0%, #047857 100%);">
-                                <span>💾</span>
-                                <span>Simpan Data</span>
-                            </button>
-                            <button onclick="exportToCSV()" class="btn-secondary flex items-center space-x-2">
-                                <span>📊</span>
-                                <span>Export CSV</span>
-                            </button>
-                            <button onclick="exportToJSON()" class="btn-secondary flex items-center space-x-2" style="background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);">
-                                <span>📄</span>
-                                <span>Export JSON</span>
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <h2 class="text-2xl font-bold bg-gradient-to-r from-green-600 via-blue-600 to-purple-600 bg-clip-text text-transparent mb-6">🔍 Pencarian & Filter</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">🔍 Pencarian</label>
-                            <input type="text" id="searchInput" class="input-field" placeholder="Cari nama, kode, atau lokasi...">
+                            <input type="text" id="searchInput" class="input-field" placeholder="Cari nama barang...">
                         </div>
-                        
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">🏷️ Filter Kategori</label>
-                            <select id="categoryFilter" class="input-field">
+                            <select id="filterCategory" class="input-field">
                                 <option value="">Semua Kategori</option>
-                                <option value="ELK">ELK - Elektronik & IT</option>
-                                <option value="EKL">EKL - Elektronik & Kelistrikan</option>
-                                <option value="MBL">MBL - Mebel & Furniture</option>
-                                <option value="OLR">OLR - Olahraga & Kesehatan</option>
-                                <option value="KDR">KDR - Kendaraan & Transportasi</option>
-                                <option value="ATK">ATK - Alat Tulis & Kantor</option>
-                                <option value="KBN">KBN - Kebersihan & Maintenance</option>
-                                <option value="LAB">LAB - Laboratorium & Praktikum</option>
-                                <option value="PRP">PRP - Perpustakaan & Media</option>
-                                <option value="KTR">KTR - Keamanan & Ketertiban</option>
-                                <option value="MSK">MSK - Musik & Seni</option>
-                                <option value="DPR">DPR - Dapur & Konsumsi</option>
-                                <option value="KSH">KSH - Kesehatan & P3K</option>
-                                <option value="BNG">BNG - Bangunan & Infrastruktur</option>
-                                <option value="TXT">TXT - Tekstil & Pakaian</option>
-                                <option value="AGR">AGR - Pertanian & Kebun</option>
                                 <option value="PPU">PPU - Peralatan Praktek Umum</option>
                                 <option value="PPK">PPK - Peralatan Praktek Kejuruan</option>
                                 <option value="AKB">AKB - Alat Kebersihan</option>
-                                <option value="AK3">AK3 - Alat Keamanan & K3</option>
+                                <option value="AKK">AKK - Alat Keamanan & K3</option>
                                 <option value="ABI">ABI - Aset Bangunan Infrastruktur</option>
-                                <option value="PUS">PUS - Perpustakaan</option>
+                                <option value="PST">PST - Perpustakaan</option>
                                 <option value="MPI">MPI - Mading Papan Informasi</option>
+                                <option value="Elektronik">Elektronik</option>
+                                <option value="Furniture">Furniture</option>
+                                <option value="Alat Tulis">Alat Tulis</option>
+                                <option value="Peralatan">Peralatan</option>
+                                <option value="Lainnya">Lainnya</option>
                             </select>
                         </div>
-                        
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">⚡ Filter Kondisi</label>
-                            <select id="conditionFilter" class="input-field">
+                            <select id="filterLocation" class="input-field">
+                                <option value="">Semua Lokasi</option>
+                                <option value="RKS">RKS - Ruang Kepala Sekolah</option>
+                                <option value="RGR">RGR - Ruang Guru</option>
+                                <option value="RTU">RTU - Ruang Tata Usaha</option>
+                                <option value="RST">RST - Ruang Staf</option>
+                                <option value="RTL">RTL - Ruang Toilet</option>
+                                <option value="RDP">RDP - Ruang Dapur</option>
+                                <option value="RGD">RGD - Ruang Gudang</option>
+                                <option value="KLS-X-DKV">KLS-X-DKV - Kelas X DKV</option>
+                                <option value="KLS-XI-DKV">KLS-XI-DKV - Kelas XI DKV</option>
+                                <option value="KLS-XII-DKV">KLS-XII-DKV - Kelas XII DKV</option>
+                                <option value="KLS-X-TJKT">KLS-X-TJKT - Kelas X TJKT</option>
+                                <option value="KLS-XI-TJKT">KLS-XI-TJKT - Kelas XI TJKT</option>
+                                <option value="KLS-XII-TJKT">KLS-XII-TJKT - Kelas XII TJKT</option>
+                                <option value="KLS-X-MPLB">KLS-X-MPLB - Kelas X MPLB</option>
+                                <option value="KLS-XI-MPLB">KLS-XI-MPLB - Kelas XI MPLB</option>
+                                <option value="KLS-XII-MPLB">KLS-XII-MPLB - Kelas XII MPLB</option>
+                                <option value="LAB">LAB - Laboratorium</option>
+                                <option value="PST">PST - Perpustakaan</option>
+                                <option value="RMU">RMU - Ruang Musholah</option>
+                                <option value="RUK">RUK - Ruang UKS</option>
+                                <option value="RBK">RBK - Ruang BKK</option>
+                                <option value="RSL1">RSL1 - Ruang Selasar Lt 01</option>
+                                <option value="RSL2">RSL2 - Ruang Selasar Lt.02</option>
+                                <option value="ROF">ROF - Ruang Office</option>
+                                <option value="RPT">RPT - R. Podcast Teffa</option>
+                                <option value="RCT">RCT - R. Percetakan Teffa</option>
+                                <option value="RVF">RVF - R. Video dan Fotography Teffa</option>
+                                <option value="RKM">RKM - R. K-Mart Teffa</option>
+                                <option value="RAU">RAU - Ruang Aula</option>
+                                <option value="RWL1">RWL1 - Ruang Tempat Wudhu Lt1</option>
+                                <option value="RWL2">RWL2 - Ruang Wudhu Lt 2</option>
+                                <option value="ROS">ROS - Ruang OSIS</option>
+                                <option value="RTM">RTM - Ruang Tamu</option>
+                                <option value="RRC">RRC - Ruang Resepsion</option>
+                                <option value="RTS">RTS - Ruang Toilet Siswa</option>
+                                <option value="RTW">RTW - Ruang Toilet Siswi</option>
+                                <option value="RGD1">RGD1 - Ruang Gudang 1</option>
+                                <option value="RGD2">RGD2 - Ruang Gudang 2</option>
+                                <option value="RTGP">RTGP - Ruang Toilet Guru Pria</option>
+                                <option value="RTGW">RTGW - Ruang Toilet Guru Putri</option>
+                                <option value="RTPS">RTPS - Ruang Toilet Perpus</option>
+                            </select>
+                        </div>
+                        <div>
+                            <select id="filterCondition" class="input-field">
                                 <option value="">Semua Kondisi</option>
                                 <option value="Baik">Baik</option>
-                                <option value="Rusak Ringan">Rusak Ringan</option>
-                                <option value="Rusak Berat">Rusak Berat</option>
+                                <option value="Cukup">Cukup</option>
+                                <option value="Rusak">Rusak</option>
                             </select>
                         </div>
                     </div>
                 </div>
 
-                <!-- Advanced Features Section -->
-                <div class="form-section">
-                    <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center">
-                        <span class="text-2xl mr-3">⚡</span>
-                        Fitur Lanjutan
-                    </h2>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                        <button onclick="openBulkImport()" class="btn-secondary flex items-center justify-center space-x-2 p-4" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);">
-                            <span>📥</span>
-                            <span>Import Data</span>
-                        </button>
-                        
-                        <button onclick="openReportGenerator()" class="btn-secondary flex items-center justify-center space-x-2 p-4" style="background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);">
-                            <span>📊</span>
-                            <span>Generate Laporan</span>
-                        </button>
-                        
-                        <button onclick="openMaintenanceSchedule()" class="btn-secondary flex items-center justify-center space-x-2 p-4" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
-                            <span>🔧</span>
-                            <span>Jadwal Maintenance</span>
-                        </button>
-                        
-                        <button onclick="openQRScanner()" class="btn-secondary flex items-center justify-center space-x-2 p-4" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
-                            <span>📱</span>
-                            <span>QR Scanner</span>
-                        </button>
+                <!-- Inventory Table -->
+                <div class="inventory-table">
+                    <div class="table-header">
+                        <div class="grid grid-cols-9 gap-4 text-sm">
+                            <div>Kode</div>
+                            <div>Nama Barang</div>
+                            <div>Kategori</div>
+                            <div>Jumlah</div>
+                            <div>Harga</div>
+                            <div>Lokasi</div>
+                            <div>Kondisi</div>
+                            <div>Sumber Dana</div>
+                            <div>Aksi</div>
+                        </div>
+                    </div>
+                    <div id="inventoryList">
+                        <div class="table-row text-center text-gray-500 py-8">
+                            <div class="col-span-9">
+                                📦 Belum ada barang dalam inventaris. Tambahkan barang pertama Anda!
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Items Table -->
-                <div class="table-container">
-                    <div class="table-header">
-                        <div class="flex items-center justify-between">
-                            <h3 class="font-semibold text-gray-800">Data Inventaris</h3>
-                            <div class="flex items-center space-x-4">
-                                <select id="sortBy" class="text-sm border border-gray-300 rounded px-2 py-1">
-                                    <option value="date">Urutkan: Tanggal</option>
-                                    <option value="name">Urutkan: Nama</option>
-                                    <option value="code">Urutkan: Kode</option>
-                                    <option value="price">Urutkan: Harga</option>
-                                    <option value="condition">Urutkan: Kondisi</option>
-                                </select>
-                                <span id="itemCount" class="text-sm text-gray-600">0 barang</span>
+                <!-- Barcode & Label Generator -->
+                <div class="form-section">
+                    <h2 class="text-2xl font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-red-600 bg-clip-text text-transparent mb-6">🏷️ Generator Barcode & Label</h2>
+                    
+                    <!-- Label Configuration -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                        <div class="bg-gradient-to-br from-blue-50 to-purple-50 p-6 rounded-xl border-2 border-blue-200">
+                            <h3 class="text-lg font-bold text-blue-800 mb-4">⚙️ Konfigurasi Label</h3>
+                            
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Ukuran Label</label>
+                                    <select id="labelSize" class="input-field">
+                                        <option value="small">Kecil (6x2.5cm)</option>
+                                        <option value="medium" selected>Sedang (8x3cm)</option>
+                                        <option value="large">Besar (10x4cm)</option>
+                                        <option value="extra">Extra Besar (12x5cm)</option>
+                                    </select>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Layout Kolom</label>
+                                    <select id="labelColumns" class="input-field">
+                                        <option value="2">2 Kolom per Baris</option>
+                                        <option value="3" selected>3 Kolom per Baris</option>
+                                        <option value="4">4 Kolom per Baris</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="includeBarcode" class="mr-3 w-4 h-4 text-blue-600" checked>
+                                    <label for="includeBarcode" class="text-sm font-medium text-gray-700">Sertakan Barcode</label>
+                                </div>
+                                
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="includeQR" class="mr-3 w-4 h-4 text-blue-600">
+                                    <label for="includeQR" class="text-sm font-medium text-gray-700">Sertakan QR Code</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gradient-to-br from-green-50 to-blue-50 p-6 rounded-xl border-2 border-green-200">
+                            <h3 class="text-lg font-bold text-green-800 mb-4">📋 Pilih Barang</h3>
+                            
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Barang Individual</label>
+                                    <select id="barcodeSelect" class="input-field">
+                                        <option value="">Pilih barang...</option>
+                                    </select>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Atau Pilih Berdasarkan</label>
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <select id="bulkCategory" class="input-field text-sm">
+                                            <option value="">Semua Kategori</option>
+                                            <option value="PPU">PPU - Peralatan Praktek Umum</option>
+                                            <option value="PPK">PPK - Peralatan Praktek Kejuruan</option>
+                                            <option value="AKB">AKB - Alat Kebersihan</option>
+                                            <option value="AKK">AKK - Alat Keamanan & K3</option>
+                                            <option value="ABI">ABI - Aset Bangunan Infrastruktur</option>
+                                            <option value="PST">PST - Perpustakaan</option>
+                                            <option value="MPI">MPI - Mading Papan Informasi</option>
+                                            <option value="Elektronik">Elektronik</option>
+                                            <option value="Furniture">Furniture</option>
+                                            <option value="Alat Tulis">Alat Tulis</option>
+                                            <option value="Peralatan">Peralatan</option>
+                                            <option value="Lainnya">Lainnya</option>
+                                        </select>
+                                        <select id="bulkLocation" class="input-field text-sm">
+                                            <option value="">Semua Lokasi</option>
+                                            <option value="RKS">RKS - Ruang Kepala Sekolah</option>
+                                            <option value="RGR">RGR - Ruang Guru</option>
+                                            <option value="RTU">RTU - Ruang Tata Usaha</option>
+                                            <option value="LAB">LAB - Laboratorium</option>
+                                            <option value="PST">PST - Perpustakaan</option>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                     
-                    <div class="overflow-x-auto">
-                        <table class="w-full">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kode</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Barang</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Lokasi</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kondisi</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jumlah</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Harga Satuan</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Harga</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sumber Dana</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody id="itemsTableBody" class="bg-white divide-y divide-gray-200">
-                                <!-- Items will be populated here -->
-                            </tbody>
-                        </table>
-                    </div>
-                    
-                    <div id="emptyState" class="text-center py-12 hidden">
-                        <div class="text-6xl mb-4">📦</div>
-                        <h3 class="text-lg font-medium text-gray-900 mb-2">Belum ada data inventaris</h3>
-                        <p class="text-gray-500">Mulai dengan menambahkan barang pertama Anda</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Edit Modal -->
-    <div id="editModal" class="modal">
-        <div class="modal-content">
-            <div class="flex items-center justify-between mb-6">
-                <h3 class="text-xl font-bold text-gray-800">✏️ Edit Data Barang</h3>
-                <button onclick="closeEditModal()" class="text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
-            </div>
-            
-            <form id="editForm" class="space-y-4">
-                <input type="hidden" id="editItemId">
-                
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Nama Barang</label>
-                    <input type="text" id="editItemName" class="input-field" required>
-                </div>
-                
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Kategori</label>
-                        <select id="editItemCategory" class="input-field" required>
-                            <option value="ELK">ELK - Elektronik & IT</option>
-                            <option value="EKL">EKL - Elektronik & Kelistrikan</option>
-                            <option value="MBL">MBL - Mebel & Furniture</option>
-                            <option value="OLR">OLR - Olahraga & Kesehatan</option>
-                            <option value="KDR">KDR - Kendaraan & Transportasi</option>
-                            <option value="ATK">ATK - Alat Tulis & Kantor</option>
-                            <option value="KBN">KBN - Kebersihan & Maintenance</option>
-                            <option value="LAB">LAB - Laboratorium & Praktikum</option>
-                            <option value="PRP">PRP - Perpustakaan & Media</option>
-                            <option value="KTR">KTR - Keamanan & Ketertiban</option>
-                            <option value="MSK">MSK - Musik & Seni</option>
-                            <option value="DPR">DPR - Dapur & Konsumsi</option>
-                            <option value="KSH">KSH - Kesehatan & P3K</option>
-                            <option value="BNG">BNG - Bangunan & Infrastruktur</option>
-                            <option value="TXT">TXT - Tekstil & Pakaian</option>
-                            <option value="AGR">AGR - Pertanian & Kebun</option>
-                            <option value="PPU">PPU - Peralatan Praktek Umum</option>
-                            <option value="PPK">PPK - Peralatan Praktek Kejuruan</option>
-                            <option value="AKB">AKB - Alat Kebersihan</option>
-                            <option value="AK3">AK3 - Alat Keamanan & K3</option>
-                            <option value="ABI">ABI - Aset Bangunan Infrastruktur</option>
-                            <option value="PUS">PUS - Perpustakaan</option>
-                            <option value="MPI">MPI - Mading Papan Informasi</option>
-                        </select>
-                    </div>
-                    
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Lokasi</label>
-                        <select id="editItemLocation" class="input-field" required>
-                            <option value="LAB">LAB - Laboratorium</option>
-                            <option value="LAB-MPLB">LAB-MPLB - Lab. Komputer MPLB</option>
-                            <option value="LAB-DKV">LAB-DKV - Lab. Komputer DKV</option>
-                            <option value="LAB-TJKT">LAB-TJKT - Lab. Komputer TJKT</option>
-                            <option value="RGR">RGR - Ruang Guru</option>
-                            <option value="KTR">KTR - Kantor</option>
-                            <option value="KLS">KLS - Ruang Kelas</option>
-                            <option value="X-DKV">X-DKV - R. Kelas X-DKV</option>
-                            <option value="XI-DKV">XI-DKV - R. Kelas XI-DKV</option>
-                            <option value="XII-DKV">XII-DKV - R. Kelas XII-DKV</option>
-                            <option value="X-TJKT">X-TJKT - R. Kelas X-TJKT</option>
-                            <option value="XI-TJKT">XI-TJKT - R. Kelas XI-TJKT</option>
-                            <option value="XII-TJKT">XII-TJKT - R. Kelas XII-TJKT</option>
-                            <option value="X-MPLB">X-MPLB - R. Kelas X-MPLB</option>
-                            <option value="XI-MPLB">XI-MPLB - R. Kelas XI-MPLB</option>
-                            <option value="XII-MPLB">XII-MPLB - R. Kelas XII-MPLB</option>
-                            <option value="PRP">PRP - Perpustakaan</option>
-                            <option value="DPR">DPR - Ruang Dapur</option>
-                            <option value="GDG">GDG - R. Gudang</option>
-                            <option value="AUL">AUL - Aula</option>
-                            <option value="LPG">LPG - Lapangan</option>
-                            <option value="RKR">RKR - Ruang Kreatifitas</option>
-                            <option value="MSH">MSH - Ruang Musholah</option>
-                            <option value="UKS">UKS - Ruang UKS</option>
-                            <option value="BKK">BKK - Ruang BKK</option>
-                            <option value="SL1">SL1 - Ruang Selasar Lt 01</option>
-                            <option value="SL2">SL2 - Ruang Selasar Lt 02</option>
-                            <option value="OFC">OFC - Ruang Office</option>
-                            <option value="POD">POD - R. Podcast Teffa</option>
-                            <option value="PRC">PRC - R. Percetakan Teffa</option>
-                            <option value="VID">VID - R. Video dan Fotography Teffa</option>
-                            <option value="KMT">KMT - R. K-Mart Teffa</option>
-                            <option value="AUL">AUL - Ruang Aula</option>
-                            <option value="WD1">WD1 - Ruang Tempat Wudhu Lt1</option>
-                            <option value="WD2">WD2 - Ruang Wudhu Lt 2</option>
-                            <option value="OSS">OSS - Ruang OSIS</option>
-                            <option value="TMU">TMU - Ruang Tamu</option>
-                            <option value="RCP">RCP - Ruang Resepsion</option>
-                            <option value="TS1">TS1 - Ruang Toilet Siswa</option>
-                            <option value="TS2">TS2 - Ruang Toilet Siswi</option>
-                            <option value="GD1">GD1 - Ruang Gudang 1</option>
-                            <option value="GD2">GD2 - Ruang Gudang 2</option>
-                            <option value="TGP">TGP - Ruang Toilet Guru Pria</option>
-                            <option value="TGW">TGW - Ruang Toilet Guru Putri</option>
-                            <option value="TPP">TPP - Ruang Toilet Perpus</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Kondisi</label>
-                        <select id="editItemCondition" class="input-field" required>
-                            <option value="Baik">Baik</option>
-                            <option value="Rusak Ringan">Rusak Ringan</option>
-                            <option value="Rusak Berat">Rusak Berat</option>
-                        </select>
-                    </div>
-                    
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Jumlah</label>
-                        <input type="number" id="editItemQuantity" class="input-field" min="1" required>
-                    </div>
-                </div>
-                
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Harga Satuan (Rp)</label>
-                    <input type="number" id="editItemPrice" class="input-field" min="0" step="1000" required>
-                </div>
-                
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Sumber Dana</label>
-                    <select id="editItemFunding" class="input-field" required>
-                        <option value="APBD">APBD - Anggaran Pendapatan Belanja Daerah</option>
-                        <option value="BOS">BOS - Bantuan Operasional Sekolah</option>
-                        <option value="APBN">APBN - Anggaran Pendapatan Belanja Negara</option>
-                        <option value="Hibah">Hibah - Bantuan/Sumbangan</option>
-                        <option value="Swadaya">Swadaya - Dana Mandiri Sekolah</option>
-                        <option value="CSR">CSR - Corporate Social Responsibility</option>
-                        <option value="Komite">Komite - Dana Komite Sekolah</option>
-                        <option value="Lainnya">Lainnya</option>
-                    </select>
-                </div>
-                
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Keterangan</label>
-                    <input type="text" id="editItemNotes" class="input-field">
-                </div>
-                
-                <div class="flex justify-end space-x-3 pt-4">
-                    <button type="button" onclick="closeEditModal()" class="px-4 py-2 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">
-                        Batal
-                    </button>
-                    <button type="submit" class="btn-primary">
-                        Update Barang
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Bulk Import Modal -->
-    <div id="bulkImportModal" class="modal">
-        <div class="modal-content">
-            <div class="flex items-center justify-between mb-6">
-                <h3 class="text-xl font-bold text-gray-800">📥 Import Data Massal</h3>
-                <button onclick="closeBulkImportModal()" class="text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
-            </div>
-            
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Format CSV</label>
-                    <div class="bg-gray-50 p-3 rounded-lg text-xs font-mono">
-                        Nama,Kategori,Lokasi,Kondisi,Jumlah,Harga,Sumber Dana,Keterangan<br>
-                        "Laptop Dell","ELK","LAB","Baik",1,8500000,"BOS","Untuk pembelajaran"
-                    </div>
-                </div>
-                
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Paste Data CSV</label>
-                    <textarea id="csvData" class="input-field h-32" placeholder="Paste data CSV di sini..."></textarea>
-                </div>
-                
-                <div class="flex justify-end space-x-3">
-                    <button type="button" onclick="closeBulkImportModal()" class="px-4 py-2 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200">
-                        Batal
-                    </button>
-                    <button onclick="processBulkImport()" class="btn-primary">
-                        Import Data
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Report Generator Modal -->
-    <div id="reportModal" class="modal">
-        <div class="modal-content" style="max-width: 800px;">
-            <div class="flex items-center justify-between mb-6">
-                <h3 class="text-xl font-bold text-gray-800">📊 Generate Laporan</h3>
-                <button onclick="closeReportModal()" class="text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Jenis Laporan</label>
-                    <select id="reportType" class="input-field">
-                        <option value="summary">Ringkasan Inventaris</option>
-                        <option value="category">Laporan per Kategori</option>
-                        <option value="location">Laporan per Lokasi</option>
-                        <option value="condition">Laporan Kondisi Barang</option>
-                        <option value="value">Laporan Nilai Aset</option>
-                    </select>
-                </div>
-                
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Format Output</label>
-                    <select id="reportFormat" class="input-field">
-                        <option value="html">HTML (Print)</option>
-                        <option value="csv">CSV</option>
-                        <option value="json">JSON</option>
-                    </select>
-                </div>
-            </div>
-            
-            <div class="flex justify-end space-x-3">
-                <button type="button" onclick="closeReportModal()" class="px-4 py-2 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200">
-                    Batal
-                </button>
-                <button onclick="generateReport()" class="btn-primary">
-                    Generate Laporan
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Maintenance Schedule Modal -->
-    <div id="maintenanceModal" class="modal">
-        <div class="modal-content" style="max-width: 900px;">
-            <div class="flex items-center justify-between mb-6">
-                <h3 class="text-xl font-bold text-gray-800">🔧 Jadwal Maintenance</h3>
-                <button onclick="closeMaintenanceModal()" class="text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
-            </div>
-            
-            <div class="mb-6">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                    <div class="stats-card">
-                        <div class="text-center">
-                            <div class="text-2xl font-bold text-red-600" id="urgentMaintenance">0</div>
-                            <div class="text-sm text-gray-600">Perlu Segera</div>
-                        </div>
-                    </div>
-                    <div class="stats-card">
-                        <div class="text-center">
-                            <div class="text-2xl font-bold text-yellow-600" id="scheduledMaintenance">0</div>
-                            <div class="text-sm text-gray-600">Terjadwal</div>
-                        </div>
-                    </div>
-                    <div class="stats-card">
-                        <div class="text-center">
-                            <div class="text-2xl font-bold text-green-600" id="completedMaintenance">0</div>
-                            <div class="text-sm text-gray-600">Selesai</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div id="maintenanceList" class="space-y-3 max-h-96 overflow-y-auto">
-                <!-- Maintenance items will be populated here -->
-            </div>
-            
-            <div class="flex justify-end mt-6">
-                <button onclick="closeMaintenanceModal()" class="btn-primary">
-                    Tutup
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- QR Scanner Modal -->
-    <div id="qrScannerModal" class="modal">
-        <div class="modal-content">
-            <div class="flex items-center justify-between mb-6">
-                <h3 class="text-xl font-bold text-gray-800">📱 QR Code Scanner</h3>
-                <button onclick="closeQRScannerModal()" class="text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
-            </div>
-            
-            <div class="text-center space-y-4">
-                <div class="bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg p-8">
-                    <div class="text-6xl mb-4">📱</div>
-                    <p class="text-gray-600 mb-4">Fitur QR Scanner akan tersedia dalam versi mendatang</p>
-                    <p class="text-sm text-gray-500">Saat ini Anda dapat menggunakan pencarian manual atau filter untuk menemukan barang</p>
-                </div>
-                
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Atau masukkan kode barang manual</label>
-                    <div class="flex space-x-2">
-                        <input type="text" id="manualCode" class="input-field flex-1" placeholder="Contoh: ELK-001">
-                        <button onclick="searchByCode()" class="btn-primary">
-                            Cari
+                    <!-- Action Buttons -->
+                    <div class="flex flex-wrap gap-4 mb-6">
+                        <button onclick="generateSingleLabel()" class="btn-secondary">
+                            🏷️ Generate Label Tunggal
                         </button>
+                        <button onclick="generateBulkLabels()" class="btn-primary">
+                            📄 Generate Label Massal
+                        </button>
+                        <button onclick="previewLabels()" class="bg-gradient-to-r from-yellow-500 to-orange-500 text-white px-6 py-3 rounded-lg font-semibold hover:shadow-lg transition-all">
+                            👁️ Preview Label
+                        </button>
+                        <button onclick="printLabels()" class="bg-gradient-to-r from-green-500 to-teal-500 text-white px-6 py-3 rounded-lg font-semibold hover:shadow-lg transition-all">
+                            🖨️ Print Label
+                        </button>
+                    </div>
+
+                    <!-- Label Preview -->
+                    <div id="labelPreview" class="bg-white border-2 border-gray-200 rounded-xl p-6 min-h-[200px] hidden">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-bold text-gray-800">👁️ Preview Label</h3>
+                            <button onclick="closeLabelPreview()" class="text-gray-400 hover:text-gray-600 text-xl">&times;</button>
+                        </div>
+                        <div id="labelContainer" class="grid gap-4"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Help Button -->
+    <button id="helpButton" onclick="openHelpModal()" class="fixed bottom-6 right-6 bg-gradient-to-r from-blue-500 to-purple-600 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 z-50 animate-pulse">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+    </button>
+
+    <!-- Help Modal -->
+    <div id="helpModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+                <div class="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6 rounded-t-2xl">
+                    <div class="flex items-center justify-between">
+                        <h2 class="text-2xl font-bold">📚 Panduan Lengkap SAPRAS Digital</h2>
+                        <button onclick="closeHelpModal()" class="text-white hover:text-gray-200 text-2xl">&times;</button>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Memulai Aplikasi -->
+                        <div class="bg-blue-50 p-4 rounded-lg">
+                            <h3 class="text-lg font-bold text-blue-800 mb-3">🚀 Memulai Aplikasi</h3>
+                            <ul class="text-sm text-gray-700 space-y-2">
+                                <li>• Aplikasi siap digunakan tanpa instalasi</li>
+                                <li>• Data tersimpan otomatis di browser</li>
+                                <li>• Mulai dengan menambah barang pertama</li>
+                                <li>• Kode barang dibuat otomatis (SPR0001, SPR0002, dst)</li>
+                            </ul>
+                        </div>
+
+                        <!-- Menambah Inventaris -->
+                        <div class="bg-green-50 p-4 rounded-lg">
+                            <h3 class="text-lg font-bold text-green-800 mb-3">📝 Menambah Inventaris</h3>
+                            <ul class="text-sm text-gray-700 space-y-2">
+                                <li>• <strong>Nama Barang:</strong> Gunakan nama yang spesifik</li>
+                                <li>• <strong>Kategori:</strong> Pilih sesuai jenis barang</li>
+                                <li>• <strong>Lokasi:</strong> Tentukan ruang penyimpanan</li>
+                                <li>• <strong>Kondisi:</strong> Nilai secara objektif</li>
+                                <li>• <strong>Sumber Dana:</strong> Catat asal pembiayaan</li>
+                            </ul>
+                        </div>
+
+                        <!-- Pencarian & Filter -->
+                        <div class="bg-purple-50 p-4 rounded-lg">
+                            <h3 class="text-lg font-bold text-purple-800 mb-3">🔍 Pencarian & Filter</h3>
+                            <ul class="text-sm text-gray-700 space-y-2">
+                                <li>• <strong>Pencarian:</strong> Ketik nama atau kode barang</li>
+                                <li>• <strong>Filter Kategori:</strong> Tampilkan per jenis</li>
+                                <li>• <strong>Filter Lokasi:</strong> Cari per ruangan</li>
+                                <li>• <strong>Filter Kondisi:</strong> Sortir berdasarkan kondisi</li>
+                                <li>• Kombinasikan filter untuk hasil spesifik</li>
+                            </ul>
+                        </div>
+
+                        <!-- Fitur Lanjutan -->
+                        <div class="bg-yellow-50 p-4 rounded-lg">
+                            <h3 class="text-lg font-bold text-yellow-800 mb-3">⚡ Fitur Lanjutan</h3>
+                            <ul class="text-sm text-gray-700 space-y-2">
+                                <li>• <strong>Barcode:</strong> Generate untuk labeling</li>
+                                <li>• <strong>Edit:</strong> Klik tombol edit untuk mengubah</li>
+                                <li>• <strong>Hapus:</strong> Konfirmasi sebelum menghapus</li>
+                                <li>• <strong>Statistik:</strong> Pantau total dan nilai aset</li>
+                                <li>• <strong>Stok Rendah:</strong> Alert untuk barang < 5 unit</li>
+                            </ul>
+                        </div>
+
+                        <!-- Tips Akurasi Data -->
+                        <div class="bg-red-50 p-4 rounded-lg">
+                            <h3 class="text-lg font-bold text-red-800 mb-3">🎯 Tips Akurasi Data</h3>
+                            <ul class="text-sm text-gray-700 space-y-2">
+                                <li>• Gunakan nama lengkap dan merk/brand</li>
+                                <li>• Pilih kategori yang paling sesuai</li>
+                                <li>• Tentukan lokasi dengan tepat</li>
+                                <li>• Nilai kondisi secara objektif</li>
+                                <li>• Isi keterangan untuk detail tambahan</li>
+                            </ul>
+                        </div>
+
+                        <!-- Hal Penting -->
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h3 class="text-lg font-bold text-gray-800 mb-3">⚠️ Hal Penting</h3>
+                            <ul class="text-sm text-gray-700 space-y-2">
+                                <li>• Data tersimpan di browser lokal</li>
+                                <li>• Jangan clear data/cache browser</li>
+                                <li>• Backup data secara berkala</li>
+                                <li>• Gunakan browser yang sama</li>
+                                <li>• Akses dari komputer yang sama</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Kode Kategori -->
+                    <div class="mt-6 bg-gradient-to-r from-blue-50 to-purple-50 p-4 rounded-lg">
+                        <h3 class="text-lg font-bold text-gray-800 mb-3">📋 Kode Kategori & Lokasi</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                            <div>
+                                <h4 class="font-semibold text-blue-700 mb-2">Kategori:</h4>
+                                <ul class="text-gray-600 space-y-1">
+                                    <li>• PPU - Peralatan Praktek Umum</li>
+                                    <li>• PPK - Peralatan Praktek Kejuruan</li>
+                                    <li>• AKB - Alat Kebersihan</li>
+                                    <li>• AKK - Alat Keamanan & K3</li>
+                                    <li>• ABI - Aset Bangunan Infrastruktur</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-green-700 mb-2">Lokasi Utama:</h4>
+                                <ul class="text-gray-600 space-y-1">
+                                    <li>• RKS - Ruang Kepala Sekolah</li>
+                                    <li>• RGR - Ruang Guru</li>
+                                    <li>• RTU - Ruang Tata Usaha</li>
+                                    <li>• KLS-X/XI/XII - Kelas per tingkat</li>
+                                    <li>• LAB - Laboratorium</li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1052,498 +903,109 @@
 
     <script>
         // Global variables
-        let items = JSON.parse(localStorage.getItem('saprasItems')) || [];
+        let inventory = JSON.parse(localStorage.getItem('inventory')) || [];
+        let itemCounter = parseInt(localStorage.getItem('itemCounter')) || 1;
         let schoolLogo = localStorage.getItem('schoolLogo') || null;
-        let editingItemId = null;
-        let isEditMode = false;
 
         // Initialize app
         document.addEventListener('DOMContentLoaded', function() {
-            initializeApp();
-            loadSchoolLogo();
-            renderItems();
-            updateStatistics();
-            setupEventListeners();
             updateCurrentDate();
+            displayInventory();
+            updateStatistics();
+            updateBarcodeSelect();
+            loadLogo();
+            
+            // Event listeners
+            document.getElementById('addItemForm').addEventListener('submit', addItem);
+            document.getElementById('searchInput').addEventListener('input', filterInventory);
+            document.getElementById('filterCategory').addEventListener('change', filterInventory);
+            document.getElementById('filterLocation').addEventListener('change', filterInventory);
+            document.getElementById('filterCondition').addEventListener('change', filterInventory);
         });
 
-        function initializeApp() {
-            // Add some sample data if empty
-            if (items.length === 0) {
-                const sampleItems = [
-                    {
-                        id: generateId(),
-                        code: 'ELK-001',
-                        name: 'Laptop Dell Inspiron 15',
-                        category: 'ELK',
-                        location: 'LAB',
-                        condition: 'Baik',
-                        quantity: 1,
-                        price: 8500000,
-                        funding: 'BOS',
-                        notes: 'Untuk pembelajaran programming',
-                        date: '2024-01-15'
-                    },
-                    {
-                        id: generateId(),
-                        code: 'MBL-001',
-                        name: 'Meja Kayu Jati',
-                        category: 'MBL',
-                        location: 'RGR',
-                        condition: 'Baik',
-                        quantity: 5,
-                        price: 750000,
-                        funding: 'APBD',
-                        notes: 'Meja guru ruang kelas',
-                        date: '2024-01-15'
-                    },
-                    {
-                        id: generateId(),
-                        code: 'OLR-001',
-                        name: 'Bola Sepak Nike',
-                        category: 'OLR',
-                        location: 'LPG',
-                        condition: 'Rusak Ringan',
-                        quantity: 3,
-                        price: 250000,
-                        funding: 'Swadaya',
-                        notes: 'Perlu dipompa ulang',
-                        date: '2024-01-15'
-                    }
-                ];
-                items = sampleItems;
-                saveItems();
-            }
-        }
+        // Handle logo upload
+        function handleLogoUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
 
-        function setupEventListeners() {
-            // Form submission
-            document.getElementById('itemForm').addEventListener('submit', handleAddItem);
-            document.getElementById('editForm').addEventListener('submit', handleEditItem);
-            
-            // Search and filter
-            document.getElementById('searchInput').addEventListener('input', filterItems);
-            document.getElementById('categoryFilter').addEventListener('change', filterItems);
-            document.getElementById('conditionFilter').addEventListener('change', filterItems);
-            document.getElementById('sortBy').addEventListener('change', sortItems);
-            
-            // Logo upload - Fixed implementation
-            const logoUpload = document.getElementById('logoUpload');
-            const logoInput = document.getElementById('logoInput');
-            
-            // Click anywhere in upload area to trigger file selection
-            logoUpload.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                console.log('Upload area clicked');
-                logoInput.click();
-            });
-            
-            // File input change event
-            logoInput.addEventListener('change', function(e) {
-                console.log('File input changed');
-                if (e.target.files && e.target.files[0]) {
-                    handleLogoUpload(e.target.files[0]);
-                }
-            });
-            
-            // Drag and drop events
-            logoUpload.addEventListener('dragover', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                logoUpload.classList.add('dragover');
-                console.log('Drag over');
-            });
-            
-            logoUpload.addEventListener('dragleave', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                logoUpload.classList.remove('dragover');
-                console.log('Drag leave');
-            });
-            
-            logoUpload.addEventListener('drop', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                logoUpload.classList.remove('dragover');
-                console.log('File dropped');
-                
-                const files = e.dataTransfer.files;
-                if (files && files[0]) {
-                    handleLogoUpload(files[0]);
-                }
-            });
-            
-            // Paste event for logo
-            document.addEventListener('paste', function(e) {
-                const items = e.clipboardData?.items;
-                if (items) {
-                    for (let item of items) {
-                        if (item.type.indexOf('image') !== -1) {
-                            const file = item.getAsFile();
-                            if (file) {
-                                handleLogoUpload(file);
-                                break;
-                            }
-                        }
-                    }
-                }
-            });
-            
-            // Prevent default drag behaviors on document
-            document.addEventListener('dragover', (e) => e.preventDefault());
-            document.addEventListener('drop', (e) => e.preventDefault());
-        }
-
-        function generateId() {
-            return Date.now().toString(36) + Math.random().toString(36).substr(2);
-        }
-
-        function generateCode(category) {
-            const categoryItems = items.filter(item => item.category === category);
-            const nextNumber = categoryItems.length + 1;
-            return `${category}-${nextNumber.toString().padStart(3, '0')}`;
-        }
-
-        function handleAddItem(e) {
-            e.preventDefault();
-            
-            const loadingSpinner = document.getElementById('addLoading');
-            loadingSpinner.classList.remove('hidden');
-            
-            setTimeout(() => {
-                const formData = new FormData(e.target);
-                const category = document.getElementById('itemCategory').value;
-                
-                const newItem = {
-                    id: generateId(),
-                    code: generateCode(category),
-                    name: document.getElementById('itemName').value,
-                    category: category,
-                    location: document.getElementById('itemLocation').value,
-                    condition: document.getElementById('itemCondition').value,
-                    quantity: parseInt(document.getElementById('itemQuantity').value) || 1,
-                    price: parseInt(document.getElementById('itemPrice').value) || 0,
-                    funding: document.getElementById('itemFunding').value,
-                    notes: document.getElementById('itemNotes').value,
-                    date: new Date().toISOString().split('T')[0]
-                };
-                
-                items.push(newItem);
-                saveItems();
-                renderItems();
-                updateStatistics();
-                
-                // Reset form
-                e.target.reset();
-                
-                loadingSpinner.classList.add('hidden');
-                showNotification('Barang berhasil ditambahkan!', 'success');
-            }, 1000);
-        }
-
-        function handleEditItem(e) {
-            e.preventDefault();
-            
-            const itemId = document.getElementById('editItemId').value;
-            const itemIndex = items.findIndex(item => item.id === itemId);
-            
-            if (itemIndex !== -1) {
-                items[itemIndex] = {
-                    ...items[itemIndex],
-                    name: document.getElementById('editItemName').value,
-                    category: document.getElementById('editItemCategory').value,
-                    location: document.getElementById('editItemLocation').value,
-                    condition: document.getElementById('editItemCondition').value,
-                    quantity: parseInt(document.getElementById('editItemQuantity').value),
-                    price: parseInt(document.getElementById('editItemPrice').value) || 0,
-                    funding: document.getElementById('editItemFunding').value,
-                    notes: document.getElementById('editItemNotes').value
-                };
-                
-                saveItems();
-                renderItems();
-                updateStatistics();
-                closeEditModal();
-                showNotification('Data barang berhasil diupdate!', 'success');
-            }
-        }
-
-        function editItem(id) {
-            const item = items.find(item => item.id === id);
-            if (item) {
-                document.getElementById('editItemId').value = item.id;
-                document.getElementById('editItemName').value = item.name;
-                document.getElementById('editItemCategory').value = item.category;
-                document.getElementById('editItemLocation').value = item.location;
-                document.getElementById('editItemCondition').value = item.condition;
-                document.getElementById('editItemQuantity').value = item.quantity;
-                document.getElementById('editItemPrice').value = item.price || 0;
-                document.getElementById('editItemFunding').value = item.funding || 'BOS';
-                document.getElementById('editItemNotes').value = item.notes || '';
-                
-                document.getElementById('editModal').classList.add('active');
-            }
-        }
-
-        function deleteItem(id) {
-            if (confirm('Apakah Anda yakin ingin menghapus barang ini?')) {
-                items = items.filter(item => item.id !== id);
-                saveItems();
-                renderItems();
-                updateStatistics();
-                showNotification('Barang berhasil dihapus!', 'success');
-            }
-        }
-
-        function closeEditModal() {
-            document.getElementById('editModal').classList.remove('active');
-        }
-
-        function generateLabel(id) {
-            const item = items.find(item => item.id === id);
-            if (!item) return;
-            
-            const labelWindow = window.open('', '_blank');
-            const logoSrc = schoolLogo || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTIiIGZpbGw9IiMzQjgyRjYiLz4KPHN2ZyB4PSIxNiIgeT0iMTYiIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJ3aGl0ZSI+CjxwYXRoIGQ9Ik0xMiAzbDggNHY2YzAgNS41NS0zLjg0IDEwLjc0LTkgMTItNS4xNi0xLjI2LTktNi40NS05LTEyVjdsOC00eiIvPgo8L3N2Zz4KPC9zdmc+';
-            
-            labelWindow.document.write(`
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <title>Label - ${item.code}</title>
-                    <style>
-                        body { 
-                            font-family: Arial, sans-serif; 
-                            margin: 0; 
-                            padding: 20px; 
-                            background: white;
-                        }
-                        .label { 
-                            width: 8cm; 
-                            height: 5cm; 
-                            border: 2px solid #333; 
-                            padding: 10px; 
-                            text-align: center; 
-                            background: white;
-                            box-sizing: border-box;
-                        }
-                        .header { 
-                            font-size: 10px; 
-                            font-weight: bold; 
-                            margin-bottom: 5px; 
-                        }
-                        .logo { 
-                            width: 30px; 
-                            height: 30px; 
-                            margin: 0 auto 5px; 
-                        }
-                        .barcode { 
-                            margin: 10px 0; 
-                        }
-                        .info { 
-                            font-size: 9px; 
-                            line-height: 1.2; 
-                        }
-                        .code { 
-                            font-weight: bold; 
-                            font-size: 10px; 
-                        }
-                        @media print {
-                            body { margin: 0; padding: 0; }
-                            .label { border: 1px solid #000; }
-                        }
-                    </style>
-                    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
-                </head>
-                <body>
-                    <div class="label">
-                        <div class="header">SMK NASIONAL BANDUNG</div>
-                        <div style="font-size: 8px; color: #666; margin-bottom: 8px;">INVENTARIS SARANA & PRASARANA</div>
-                        
-                        <div class="barcode">
-                            <canvas id="barcode"></canvas>
-                        </div>
-                        
-                        <div class="info">
-                            <div style="font-weight: bold; margin-bottom: 2px;">${item.name}</div>
-                            <div>Kode: <span class="code">${item.code}</span></div>
-                            <div>Lokasi: ${item.location}</div>
-                            <div>Kondisi: ${item.condition}</div>
-                            <div>Dana: ${item.funding || 'BOS'}</div>
-                        </div>
-                        
-                        <div style="font-size: 7px; color: #999; margin-top: 8px;">
-                            Generated: ${new Date().toLocaleDateString('id-ID')}
-                        </div>
-                    </div>
-                    
-                    <script>
-                        JsBarcode("#barcode", "${item.code}", {
-                            format: "CODE128",
-                            width: 1.5,
-                            height: 30,
-                            displayValue: false,
-                            margin: 0
-                        });
-                        
-                        setTimeout(() => {
-                            window.print();
-                        }, 1000);
-                    </script>
-                <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96a563a0624d9b07',t:'MTc1NDM4NzQxNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
-                </html>
-            `);
-        }
-
-        function filterItems() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const categoryFilter = document.getElementById('categoryFilter').value;
-            const conditionFilter = document.getElementById('conditionFilter').value;
-            
-            const filteredItems = items.filter(item => {
-                const matchesSearch = !searchTerm || 
-                    item.name.toLowerCase().includes(searchTerm) ||
-                    item.code.toLowerCase().includes(searchTerm) ||
-                    item.location.toLowerCase().includes(searchTerm) ||
-                    (item.notes && item.notes.toLowerCase().includes(searchTerm));
-                
-                const matchesCategory = !categoryFilter || item.category === categoryFilter;
-                const matchesCondition = !conditionFilter || item.condition === conditionFilter;
-                
-                return matchesSearch && matchesCategory && matchesCondition;
-            });
-            
-            renderItems(filteredItems);
-        }
-
-        function renderItems(itemsToRender = items) {
-            const tbody = document.getElementById('itemsTableBody');
-            const emptyState = document.getElementById('emptyState');
-            const itemCount = document.getElementById('itemCount');
-            
-            if (itemsToRender.length === 0) {
-                tbody.innerHTML = '';
-                emptyState.classList.remove('hidden');
-                itemCount.textContent = '0 barang';
+            // Check file size (max 2MB)
+            if (file.size > 2 * 1024 * 1024) {
+                showNotification('Ukuran file terlalu besar! Maksimal 2MB.', 'error');
                 return;
             }
-            
-            emptyState.classList.add('hidden');
-            itemCount.textContent = `${itemsToRender.length} barang`;
-            
-            tbody.innerHTML = itemsToRender.map(item => `
-                <tr class="table-row">
-                    <td class="px-4 py-3 text-sm font-medium text-gray-900">${item.code}</td>
-                    <td class="px-4 py-3 text-sm text-gray-900">${item.name}</td>
-                    <td class="px-4 py-3 text-sm">
-                        <span class="badge badge-${getCategoryColor(item.category)}">${item.category}</span>
-                    </td>
-                    <td class="px-4 py-3 text-sm text-gray-900">${item.location}</td>
-                    <td class="px-4 py-3 text-sm">
-                        <span class="badge badge-${getConditionColor(item.condition)}">${item.condition}</span>
-                    </td>
-                    <td class="px-4 py-3 text-sm text-gray-900">${item.quantity}</td>
-                    <td class="px-4 py-3 text-sm text-gray-900 font-medium">${formatCurrency(item.price || 0)}</td>
-                    <td class="px-4 py-3 text-sm text-gray-900 font-bold text-green-600">${formatCurrency((item.price || 0) * item.quantity)}</td>
-                    <td class="px-4 py-3 text-sm">
-                        <span class="badge badge-${getFundingColor(item.funding || 'BOS')}">${item.funding || 'BOS'}</span>
-                    </td>
-                    <td class="px-4 py-3 text-sm text-gray-500">${formatDate(item.date)}</td>
-                    <td class="px-4 py-3 text-sm space-x-2">
-                        <button onclick="editItem('${item.id}')" class="text-blue-600 hover:text-blue-800 font-medium">
-                            ✏️ Edit
-                        </button>
-                        <button onclick="deleteItem('${item.id}')" class="text-red-600 hover:text-red-800 font-medium">
-                            🗑️ Hapus
-                        </button>
-                        <button onclick="generateLabel('${item.id}')" class="text-green-600 hover:text-green-800 font-medium">
-                            🏷️ Label
-                        </button>
-                    </td>
-                </tr>
-            `).join('');
-        }
 
-        function getCategoryColor(category) {
-            const colors = {
-                'ELK': 'primary',
-                'EKL': 'warning',
-                'MBL': 'success',
-                'OLR': 'warning',
-                'KDR': 'danger',
-                'ATK': 'primary',
-                'KBN': 'success',
-                'LAB': 'warning',
-                'PRP': 'danger',
-                'KTR': 'primary',
-                'MSK': 'success',
-                'DPR': 'warning',
-                'KSH': 'danger',
-                'BNG': 'primary',
-                'TXT': 'success',
-                'AGR': 'warning',
-                'PPU': 'primary',
-                'PPK': 'success',
-                'AKB': 'warning',
-                'AK3': 'danger',
-                'ABI': 'primary',
-                'PUS': 'success',
-                'MPI': 'warning'
+            // Check file type
+            if (!file.type.startsWith('image/')) {
+                showNotification('File harus berupa gambar!', 'error');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const logoData = e.target.result;
+                schoolLogo = logoData;
+                localStorage.setItem('schoolLogo', logoData);
+                
+                // Update preview
+                updateLogoPreview();
+                updateHeaderLogo();
+                
+                showNotification('Logo berhasil diupload!', 'success');
             };
-            return colors[category] || 'primary';
+            reader.readAsDataURL(file);
         }
 
-        function getConditionColor(condition) {
-            const colors = {
-                'Baik': 'success',
-                'Rusak Ringan': 'warning',
-                'Rusak Berat': 'danger'
-            };
-            return colors[condition] || 'primary';
+        // Remove logo
+        function removeLogo() {
+            if (confirm('Apakah Anda yakin ingin menghapus logo?')) {
+                schoolLogo = null;
+                localStorage.removeItem('schoolLogo');
+                document.getElementById('logoUpload').value = '';
+                
+                updateLogoPreview();
+                updateHeaderLogo();
+                
+                showNotification('Logo berhasil dihapus!', 'success');
+            }
         }
 
-        function getFundingColor(funding) {
-            const colors = {
-                'APBD': 'primary',
-                'BOS': 'success',
-                'APBN': 'warning',
-                'Hibah': 'danger',
-                'Swadaya': 'primary',
-                'CSR': 'success',
-                'Komite': 'warning',
-                'Lainnya': 'danger'
-            };
-            return colors[funding] || 'primary';
+        // Load logo on page load
+        function loadLogo() {
+            if (schoolLogo) {
+                updateLogoPreview();
+                updateHeaderLogo();
+            }
         }
 
-        function formatDate(dateString) {
-            return new Date(dateString).toLocaleDateString('id-ID');
-        }
-
-        function formatCurrency(amount) {
-            return new Intl.NumberFormat('id-ID', {
-                style: 'currency',
-                currency: 'IDR',
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 0
-            }).format(amount);
-        }
-
-        function updateStatistics() {
-            const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
-            const categories = [...new Set(items.map(item => item.category))].length;
-            const goodCondition = items.filter(item => item.condition === 'Baik').reduce((sum, item) => sum + item.quantity, 0);
-            const needRepair = items.filter(item => item.condition !== 'Baik').reduce((sum, item) => sum + item.quantity, 0);
-            const totalValue = items.reduce((sum, item) => sum + ((item.price || 0) * item.quantity), 0);
+        // Update logo preview
+        function updateLogoPreview() {
+            const preview = document.getElementById('logoPreview');
             
-            document.getElementById('totalItems').textContent = totalItems;
-            document.getElementById('totalCategories').textContent = categories;
-            document.getElementById('goodCondition').textContent = goodCondition;
-            document.getElementById('needRepair').textContent = needRepair;
-            document.getElementById('totalValue').textContent = formatCurrency(totalValue);
+            if (schoolLogo) {
+                preview.innerHTML = `<img src="${schoolLogo}" alt="Logo Sekolah" class="max-w-full max-h-32 object-contain rounded-lg">`;
+            } else {
+                preview.innerHTML = `
+                    <div class="text-gray-400">
+                        <div class="text-4xl mb-2">🏫</div>
+                        <p class="text-sm">Logo akan muncul di sini</p>
+                    </div>
+                `;
+            }
         }
 
+        // Update header logo
+        function updateHeaderLogo() {
+            const headerLogo = document.getElementById('headerLogo');
+            
+            if (schoolLogo && headerLogo) {
+                headerLogo.querySelector('img').src = schoolLogo;
+                headerLogo.classList.remove('hidden');
+            } else if (headerLogo) {
+                headerLogo.classList.add('hidden');
+            }
+        }
+
+        // Update current date
         function updateCurrentDate() {
             const now = new Date();
             const options = { 
@@ -1555,812 +1017,601 @@
             document.getElementById('currentDate').textContent = now.toLocaleDateString('id-ID', options);
         }
 
-        // Logo upload functions
-        function handleDragOver(e) {
+        // Add new item
+        function addItem(e) {
             e.preventDefault();
-            e.stopPropagation();
-            e.currentTarget.classList.add('dragover');
-            console.log('Drag over detected');
+            
+            const item = {
+                id: itemCounter++,
+                code: `SPR${String(itemCounter - 1).padStart(4, '0')}`,
+                name: document.getElementById('itemName').value,
+                category: document.getElementById('itemCategory').value,
+                quantity: parseInt(document.getElementById('itemQuantity').value),
+                price: parseInt(document.getElementById('itemPrice').value),
+                location: document.getElementById('itemLocation').value,
+                condition: document.getElementById('itemCondition').value,
+                fundingSource: document.getElementById('itemFundingSource').value,
+                description: document.getElementById('itemDescription').value,
+                dateAdded: new Date().toLocaleDateString('id-ID')
+            };
+
+            inventory.push(item);
+            saveToLocalStorage();
+            displayInventory();
+            updateStatistics();
+            updateBarcodeSelect();
+            
+            // Reset form
+            document.getElementById('addItemForm').reset();
+            
+            showNotification('Barang berhasil ditambahkan!', 'success');
         }
 
-        function handleDragLeave(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            e.currentTarget.classList.remove('dragover');
+        // Display inventory
+        function displayInventory(items = inventory) {
+            const inventoryList = document.getElementById('inventoryList');
+            
+            if (items.length === 0) {
+                inventoryList.innerHTML = `
+                    <div class="table-row text-center text-gray-500 py-8">
+                        <div class="col-span-9">
+                            📦 ${inventory.length === 0 ? 'Belum ada barang dalam inventaris. Tambahkan barang pertama Anda!' : 'Tidak ada barang yang sesuai dengan filter.'}
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            inventoryList.innerHTML = items.map(item => `
+                <div class="table-row">
+                    <div class="grid grid-cols-9 gap-4 items-center text-sm">
+                        <div class="font-mono text-blue-600">${item.code}</div>
+                        <div class="font-medium">${item.name}</div>
+                        <div>
+                            <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs">
+                                ${item.category}
+                            </span>
+                        </div>
+                        <div class="font-semibold ${item.quantity < 5 ? 'text-red-600' : 'text-green-600'}">
+                            ${item.quantity}
+                        </div>
+                        <div class="font-medium">Rp ${item.price.toLocaleString('id-ID')}</div>
+                        <div>${item.location}</div>
+                        <div>
+                            <span class="px-2 py-1 rounded-full text-xs ${getConditionColor(item.condition)}">
+                                ${item.condition}
+                            </span>
+                        </div>
+                        <div>
+                            <span class="px-2 py-1 bg-purple-100 text-purple-800 rounded-full text-xs">
+                                ${item.fundingSource || 'N/A'}
+                            </span>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="editItem(${item.id})" class="btn-secondary text-xs">
+                                ✏️ Edit
+                            </button>
+                            <button onclick="deleteItem(${item.id})" class="btn-danger text-xs">
+                                🗑️ Hapus
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
         }
 
-        function handleDrop(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            e.currentTarget.classList.remove('dragover');
-            
-            console.log('Drop detected');
-            const files = e.dataTransfer.files;
-            console.log('Files dropped:', files.length);
-            
-            if (files.length > 0) {
-                const file = files[0];
-                console.log('Processing dropped file:', file.name);
-                processLogoFile(file);
+        // Get condition color
+        function getConditionColor(condition) {
+            switch(condition) {
+                case 'Baik': return 'bg-green-100 text-green-800';
+                case 'Cukup': return 'bg-yellow-100 text-yellow-800';
+                case 'Rusak': return 'bg-red-100 text-red-800';
+                default: return 'bg-gray-100 text-gray-800';
             }
         }
 
-        function handleLogoUpload(file) {
-            console.log('Processing logo file:', file ? file.name : 'no file');
-            if (file) {
-                processLogoFile(file);
-            }
+        // Filter inventory
+        function filterInventory() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const categoryFilter = document.getElementById('filterCategory').value;
+            const locationFilter = document.getElementById('filterLocation').value;
+            const conditionFilter = document.getElementById('filterCondition').value;
+
+            const filtered = inventory.filter(item => {
+                const matchesSearch = item.name.toLowerCase().includes(searchTerm) || 
+                                    item.code.toLowerCase().includes(searchTerm);
+                const matchesCategory = !categoryFilter || item.category === categoryFilter;
+                const matchesLocation = !locationFilter || item.location === locationFilter;
+                const matchesCondition = !conditionFilter || item.condition === conditionFilter;
+                
+                return matchesSearch && matchesCategory && matchesLocation && matchesCondition;
+            });
+
+            displayInventory(filtered);
         }
 
-        function handlePaste(e) {
-            const items = e.clipboardData.items;
-            for (let item of items) {
-                if (item.type.indexOf('image') !== -1) {
-                    const file = item.getAsFile();
-                    processLogoFile(file);
-                    break;
-                }
-            }
+        // Update statistics
+        function updateStatistics() {
+            const totalItems = inventory.length;
+            const availableStock = inventory.reduce((sum, item) => sum + item.quantity, 0);
+            const lowStock = inventory.filter(item => item.quantity < 5).length;
+            const totalValue = inventory.reduce((sum, item) => sum + (item.quantity * item.price), 0);
+
+            document.getElementById('totalItems').textContent = totalItems;
+            document.getElementById('availableStock').textContent = availableStock;
+            document.getElementById('lowStock').textContent = lowStock;
+            document.getElementById('totalValue').textContent = `Rp ${totalValue.toLocaleString('id-ID')}`;
         }
 
-        function processLogoFile(file) {
-            console.log('Processing file:', file.name, file.type, file.size);
+        // Update barcode select options
+        function updateBarcodeSelect() {
+            const select = document.getElementById('barcodeSelect');
+            select.innerHTML = '<option value="">Pilih barang...</option>';
             
-            // Validate file type
-            const validTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif', 'image/webp'];
-            if (!validTypes.includes(file.type.toLowerCase())) {
-                showNotification('❌ File harus berupa gambar! (PNG, JPG, JPEG, GIF, WebP)', 'error');
+            inventory.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item.code;
+                option.textContent = `${item.code} - ${item.name}`;
+                select.appendChild(option);
+            });
+        }
+
+        // Generate single label
+        function generateSingleLabel() {
+            const selectedCode = document.getElementById('barcodeSelect').value;
+            
+            if (!selectedCode) {
+                showNotification('Pilih barang terlebih dahulu!', 'error');
+                return;
+            }
+
+            const selectedItem = inventory.find(item => item.code === selectedCode);
+            const labels = [selectedItem];
+            
+            generateLabels(labels);
+            showNotification('Label tunggal berhasil dibuat!', 'success');
+        }
+
+        // Generate bulk labels
+        function generateBulkLabels() {
+            const category = document.getElementById('bulkCategory').value;
+            const location = document.getElementById('bulkLocation').value;
+            
+            let filteredItems = inventory;
+            
+            if (category) {
+                filteredItems = filteredItems.filter(item => item.category === category);
+            }
+            
+            if (location) {
+                filteredItems = filteredItems.filter(item => item.location === location);
+            }
+            
+            if (filteredItems.length === 0) {
+                showNotification('Tidak ada barang yang sesuai dengan filter!', 'error');
                 return;
             }
             
-            // Validate file size (5MB max)
-            if (file.size > 5 * 1024 * 1024) {
-                showNotification('❌ Ukuran file maksimal 5MB!', 'error');
-                return;
-            }
-            
-            // Show upload progress
-            const uploadProgress = document.getElementById('uploadProgress');
-            uploadProgress.classList.remove('hidden');
-            
-            // Create FileReader
-            const reader = new FileReader();
-            
-            reader.onload = function(event) {
-                try {
-                    const imageData = event.target.result;
-                    console.log('Image data loaded, length:', imageData.length);
-                    
-                    // Save to localStorage
-                    schoolLogo = imageData;
-                    localStorage.setItem('schoolLogo', schoolLogo);
-                    
-                    // Update display
-                    loadSchoolLogo();
-                    
-                    // Hide progress and show success
-                    uploadProgress.classList.add('hidden');
-                    showNotification('✅ Logo berhasil diupload!', 'success');
-                    
-                    console.log('Logo saved successfully');
-                    
-                } catch (error) {
-                    console.error('Error saving logo:', error);
-                    uploadProgress.classList.add('hidden');
-                    showNotification('❌ Gagal menyimpan logo: ' + error.message, 'error');
-                }
-            };
-            
-            reader.onerror = function(error) {
-                console.error('FileReader error:', error);
-                uploadProgress.classList.add('hidden');
-                showNotification('❌ Gagal membaca file!', 'error');
-            };
-            
-            // Start reading the file
-            reader.readAsDataURL(file);
+            generateLabels(filteredItems);
+            showNotification(`${filteredItems.length} label berhasil dibuat!`, 'success');
         }
 
-        function loadSchoolLogo() {
-            const logoElement = document.getElementById('schoolLogo');
-            const currentLogoDisplay = document.getElementById('currentLogoDisplay');
-            const currentLogoImg = document.getElementById('currentLogoImg');
+        // Generate labels
+        function generateLabels(items) {
+            const labelSize = document.getElementById('labelSize').value;
+            const columns = document.getElementById('labelColumns').value;
+            const includeBarcode = document.getElementById('includeBarcode').checked;
+            const includeQR = document.getElementById('includeQR').checked;
             
-            if (schoolLogo) {
-                // Update header logo
-                logoElement.innerHTML = `<img src="${schoolLogo}" alt="Logo Sekolah" class="w-full h-full object-cover rounded-full">`;
+            const labelContainer = document.getElementById('labelContainer');
+            labelContainer.className = `grid label-grid-${columns}`;
+            labelContainer.innerHTML = '';
+            
+            items.forEach((item, index) => {
+                const labelDiv = document.createElement('div');
+                labelDiv.className = `label-item label-${labelSize}`;
                 
-                // Show current logo display
-                currentLogoImg.src = schoolLogo;
-                currentLogoDisplay.classList.remove('hidden');
+                let labelContent = `
+                    <div class="flex flex-col h-full justify-between">
+                        <div class="text-center mb-2">
+                            <div class="flex items-center justify-center mb-1">
+                                <div id="labelLogo-${index}" class="mr-2 hidden">
+                                    <img src="" alt="Logo" class="w-6 h-6 object-contain">
+                                </div>
+                                <div class="font-bold text-gray-800 leading-tight">${item.name}</div>
+                            </div>
+                            <div class="text-gray-600 text-xs mt-1">Kode: ${item.code}</div>
+                            <div class="text-gray-500 text-xs">${item.category} | ${item.location}</div>
+                        </div>
+                `;
                 
-                console.log('Logo loaded successfully');
+                if (includeBarcode || includeQR) {
+                    labelContent += '<div class="flex justify-center items-center space-x-2">';
+                    
+                    if (includeBarcode) {
+                        labelContent += `<div class="flex-1"><svg id="barcode-${index}" class="w-full"></svg></div>`;
+                    }
+                    
+                    if (includeQR) {
+                        labelContent += `<div class="flex-shrink-0"><canvas id="qr-${index}" class="w-12 h-12"></canvas></div>`;
+                    }
+                    
+                    labelContent += '</div>';
+                }
+                
+                labelContent += `
+                        <div class="text-center text-xs text-gray-500 mt-1">
+                            <div>Qty: ${item.quantity} | ${item.condition}</div>
+                            <div class="font-semibold">SAPRAS DIGITAL</div>
+                            <div class="text-xs">SMK NASIONAL BANDUNG</div>
+                        </div>
+                    </div>
+                `;
+                
+                labelDiv.innerHTML = labelContent;
+                labelContainer.appendChild(labelDiv);
+                
+                // Add logo to label if available
+                if (schoolLogo) {
+                    const labelLogoElement = document.getElementById(`labelLogo-${index}`);
+                    if (labelLogoElement) {
+                        labelLogoElement.querySelector('img').src = schoolLogo;
+                        labelLogoElement.classList.remove('hidden');
+                    }
+                }
+
+                // Generate barcode
+                if (includeBarcode) {
+                    setTimeout(() => {
+                        try {
+                            JsBarcode(`#barcode-${index}`, item.code, {
+                                format: "CODE128",
+                                width: labelSize === 'small' ? 1 : labelSize === 'medium' ? 1.2 : 1.5,
+                                height: labelSize === 'small' ? 30 : labelSize === 'medium' ? 35 : 40,
+                                displayValue: false,
+                                margin: 0
+                            });
+                        } catch (e) {
+                            console.error('Barcode generation error:', e);
+                        }
+                    }, 100);
+                }
+                
+                // Generate QR code
+                if (includeQR) {
+                    setTimeout(() => {
+                        try {
+                            const qrData = JSON.stringify({
+                                code: item.code,
+                                name: item.name,
+                                category: item.category,
+                                location: item.location,
+                                quantity: item.quantity
+                            });
+                            
+                            QRCode.toCanvas(document.getElementById(`qr-${index}`), qrData, {
+                                width: labelSize === 'small' ? 40 : labelSize === 'medium' ? 48 : 56,
+                                margin: 1
+                            });
+                        } catch (e) {
+                            console.error('QR code generation error:', e);
+                        }
+                    }, 100);
+                }
+            });
+            
+            document.getElementById('labelPreview').classList.remove('hidden');
+        }
+
+        // Preview labels
+        function previewLabels() {
+            const selectedCode = document.getElementById('barcodeSelect').value;
+            const category = document.getElementById('bulkCategory').value;
+            const location = document.getElementById('bulkLocation').value;
+            
+            let items = [];
+            
+            if (selectedCode) {
+                const selectedItem = inventory.find(item => item.code === selectedCode);
+                if (selectedItem) items = [selectedItem];
             } else {
-                // Reset to default
-                logoElement.innerHTML = '🏫';
-                currentLogoDisplay.classList.add('hidden');
-            }
-        }
-        
-        function removeLogo() {
-            if (confirm('Apakah Anda yakin ingin menghapus logo?')) {
-                schoolLogo = null;
-                localStorage.removeItem('schoolLogo');
-                loadSchoolLogo();
-                showNotification('🗑️ Logo berhasil dihapus!', 'success');
-            }
-        }
-
-        // Export functions
-        function exportToCSV() {
-            const headers = ['Kode', 'Nama', 'Kategori', 'Lokasi', 'Kondisi', 'Jumlah', 'Harga Satuan', 'Total Harga', 'Sumber Dana', 'Keterangan', 'Tanggal'];
-            const csvContent = [
-                headers.join(','),
-                ...items.map(item => [
-                    item.code,
-                    `"${item.name}"`,
-                    item.category,
-                    item.location,
-                    item.condition,
-                    item.quantity,
-                    item.price || 0,
-                    (item.price || 0) * item.quantity,
-                    item.funding || 'BOS',
-                    `"${item.notes || ''}"`,
-                    item.date
-                ].join(','))
-            ].join('\n');
-            
-            // Create text area for user to copy
-            const textArea = document.createElement('textarea');
-            textArea.value = csvContent;
-            textArea.style.position = 'fixed';
-            textArea.style.top = '50%';
-            textArea.style.left = '50%';
-            textArea.style.transform = 'translate(-50%, -50%)';
-            textArea.style.width = '80%';
-            textArea.style.height = '60%';
-            textArea.style.zIndex = '9999';
-            textArea.style.background = 'white';
-            textArea.style.border = '2px solid #3b82f6';
-            textArea.style.borderRadius = '8px';
-            textArea.style.padding = '1rem';
-            textArea.style.fontSize = '12px';
-            textArea.style.fontFamily = 'monospace';
-            
-            document.body.appendChild(textArea);
-            textArea.select();
-            textArea.focus();
-            
-            // Try to copy to clipboard
-            try {
-                navigator.clipboard.writeText(csvContent);
-                showNotification('Data CSV berhasil disalin ke clipboard!', 'success');
-            } catch (err) {
-                showNotification('Silakan copy manual data CSV dari text area!', 'success');
-            }
-            
-            // Remove text area after 10 seconds
-            setTimeout(() => {
-                if (document.body.contains(textArea)) {
-                    document.body.removeChild(textArea);
+                items = inventory;
+                
+                if (category) {
+                    items = items.filter(item => item.category === category);
                 }
-            }, 10000);
-        }
-
-        function exportToJSON() {
-            const jsonContent = JSON.stringify(items, null, 2);
-            
-            // Create text area for user to copy
-            const textArea = document.createElement('textarea');
-            textArea.value = jsonContent;
-            textArea.style.position = 'fixed';
-            textArea.style.top = '50%';
-            textArea.style.left = '50%';
-            textArea.style.transform = 'translate(-50%, -50%)';
-            textArea.style.width = '80%';
-            textArea.style.height = '60%';
-            textArea.style.zIndex = '9999';
-            textArea.style.background = 'white';
-            textArea.style.border = '2px solid #7c3aed';
-            textArea.style.borderRadius = '8px';
-            textArea.style.padding = '1rem';
-            textArea.style.fontSize = '12px';
-            textArea.style.fontFamily = 'monospace';
-            
-            document.body.appendChild(textArea);
-            textArea.select();
-            textArea.focus();
-            
-            // Try to copy to clipboard
-            try {
-                navigator.clipboard.writeText(jsonContent);
-                showNotification('Backup JSON berhasil disalin ke clipboard!', 'success');
-            } catch (err) {
-                showNotification('Silakan copy manual data JSON dari text area!', 'success');
+                
+                if (location) {
+                    items = items.filter(item => item.location === location);
+                }
             }
             
-            // Remove text area after 10 seconds
-            setTimeout(() => {
-                if (document.body.contains(textArea)) {
-                    document.body.removeChild(textArea);
+            if (items.length === 0) {
+                showNotification('Tidak ada barang untuk di-preview!', 'error');
+                return;
+            }
+            
+            generateLabels(items);
+        }
+
+        // Print labels
+        function printLabels() {
+            const labelPreview = document.getElementById('labelPreview');
+            
+            if (labelPreview.classList.contains('hidden')) {
+                showNotification('Generate atau preview label terlebih dahulu!', 'error');
+                return;
+            }
+            
+            window.print();
+        }
+
+        // Close label preview
+        function closeLabelPreview() {
+            document.getElementById('labelPreview').classList.add('hidden');
+        }
+
+        // Global edit state
+        let editingItemId = null;
+        let originalFormData = null;
+
+        // Edit item
+        function editItem(id) {
+            const item = inventory.find(i => i.id === id);
+            if (!item) return;
+
+            // Store original form data for cancel functionality
+            originalFormData = {
+                name: document.getElementById('itemName').value,
+                category: document.getElementById('itemCategory').value,
+                quantity: document.getElementById('itemQuantity').value,
+                price: document.getElementById('itemPrice').value,
+                location: document.getElementById('itemLocation').value,
+                condition: document.getElementById('itemCondition').value,
+                fundingSource: document.getElementById('itemFundingSource').value,
+                description: document.getElementById('itemDescription').value
+            };
+
+            // Set editing state
+            editingItemId = id;
+
+            // Fill form with item data
+            document.getElementById('itemName').value = item.name;
+            document.getElementById('itemCategory').value = item.category;
+            document.getElementById('itemQuantity').value = item.quantity;
+            document.getElementById('itemPrice').value = item.price;
+            document.getElementById('itemLocation').value = item.location;
+            document.getElementById('itemCondition').value = item.condition;
+            document.getElementById('itemFundingSource').value = item.fundingSource || '';
+            document.getElementById('itemDescription').value = item.description;
+
+            // Switch to edit mode
+            switchToEditMode();
+
+            // Scroll to form
+            document.querySelector('.form-section').scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'start' 
+            });
+
+            showNotification('Mode edit aktif. Ubah data dan klik Simpan Perubahan.', 'success');
+        }
+
+        // Switch to edit mode
+        function switchToEditMode() {
+            const form = document.getElementById('addItemForm');
+            const submitButton = form.querySelector('button[type="submit"]');
+            
+            // Change form header
+            const formHeader = document.querySelector('.form-section h2');
+            formHeader.innerHTML = '✏️ Edit Barang - Mode Edit Aktif';
+            formHeader.className = 'text-2xl font-bold bg-gradient-to-r from-orange-600 via-red-600 to-pink-600 bg-clip-text text-transparent mb-6';
+            
+            // Change submit button
+            submitButton.innerHTML = '💾 Simpan Perubahan';
+            submitButton.className = 'bg-gradient-to-r from-orange-500 to-red-500 text-white px-8 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 transform hover:scale-105';
+            
+            // Add cancel button
+            const cancelButton = document.createElement('button');
+            cancelButton.type = 'button';
+            cancelButton.innerHTML = '❌ Batal Edit';
+            cancelButton.className = 'bg-gradient-to-r from-gray-500 to-gray-600 text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 ml-4';
+            cancelButton.onclick = cancelEdit;
+            
+            // Add buttons container
+            const buttonContainer = submitButton.parentElement;
+            buttonContainer.className = 'md:col-span-2 lg:col-span-3 flex items-center';
+            buttonContainer.appendChild(cancelButton);
+            
+            // Add edit indicator
+            const editIndicator = document.createElement('div');
+            editIndicator.id = 'editIndicator';
+            editIndicator.className = 'bg-gradient-to-r from-orange-100 to-red-100 border-2 border-orange-300 rounded-xl p-4 mb-6 flex items-center';
+            editIndicator.innerHTML = `
+                <div class="flex items-center">
+                    <div class="animate-pulse bg-orange-500 w-3 h-3 rounded-full mr-3"></div>
+                    <div class="text-orange-800 font-semibold">
+                        🔄 Mode Edit Aktif - Mengubah barang dengan kode: <span class="font-mono bg-orange-200 px-2 py-1 rounded">${inventory.find(i => i.id === editingItemId)?.code}</span>
+                    </div>
+                </div>
+            `;
+            
+            form.parentElement.insertBefore(editIndicator, form);
+            
+            // Highlight form
+            form.parentElement.style.background = 'linear-gradient(135deg, rgba(255,165,0,0.1) 0%, rgba(255,69,0,0.1) 100%)';
+            form.parentElement.style.border = '2px solid rgba(255,165,0,0.3)';
+        }
+
+        // Cancel edit
+        function cancelEdit() {
+            if (confirm('Apakah Anda yakin ingin membatalkan perubahan?')) {
+                // Restore original form data
+                if (originalFormData) {
+                    document.getElementById('itemName').value = originalFormData.name;
+                    document.getElementById('itemCategory').value = originalFormData.category;
+                    document.getElementById('itemQuantity').value = originalFormData.quantity;
+                    document.getElementById('itemPrice').value = originalFormData.price;
+                    document.getElementById('itemLocation').value = originalFormData.location;
+                    document.getElementById('itemCondition').value = originalFormData.condition;
+                    document.getElementById('itemFundingSource').value = originalFormData.fundingSource;
+                    document.getElementById('itemDescription').value = originalFormData.description;
                 }
-            }, 10000);
+                
+                // Reset edit state
+                resetEditMode();
+                
+                showNotification('Edit dibatalkan. Form dikembalikan ke mode tambah barang.', 'success');
+            }
         }
 
-        // Utility functions
-        function saveItems() {
-            localStorage.setItem('saprasItems', JSON.stringify(items));
+        // Reset edit mode
+        function resetEditMode() {
+            editingItemId = null;
+            originalFormData = null;
+            
+            const form = document.getElementById('addItemForm');
+            const formSection = form.parentElement;
+            
+            // Reset form header
+            const formHeader = formSection.querySelector('h2');
+            formHeader.innerHTML = '➕ Tambah Barang Baru';
+            formHeader.className = 'text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-6';
+            
+            // Reset submit button
+            const submitButton = form.querySelector('button[type="submit"]');
+            submitButton.innerHTML = '➕ Tambah Barang';
+            submitButton.className = 'btn-primary';
+            
+            // Remove cancel button
+            const cancelButton = form.querySelector('button[onclick="cancelEdit()"]');
+            if (cancelButton) {
+                cancelButton.remove();
+            }
+            
+            // Reset button container
+            const buttonContainer = submitButton.parentElement;
+            buttonContainer.className = 'md:col-span-2 lg:col-span-3';
+            
+            // Remove edit indicator
+            const editIndicator = document.getElementById('editIndicator');
+            if (editIndicator) {
+                editIndicator.remove();
+            }
+            
+            // Reset form styling
+            formSection.style.background = 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(254,254,254,0.9) 100%)';
+            formSection.style.border = '2px solid rgba(241,245,249,0.6)';
         }
 
-        function showNotification(message, type = 'success') {
+        // Update add item function to handle edit mode
+        function addItem(e) {
+            e.preventDefault();
+            
+            const itemData = {
+                name: document.getElementById('itemName').value,
+                category: document.getElementById('itemCategory').value,
+                quantity: parseInt(document.getElementById('itemQuantity').value),
+                price: parseInt(document.getElementById('itemPrice').value),
+                location: document.getElementById('itemLocation').value,
+                condition: document.getElementById('itemCondition').value,
+                fundingSource: document.getElementById('itemFundingSource').value,
+                description: document.getElementById('itemDescription').value
+            };
+
+            if (editingItemId) {
+                // Update existing item
+                const itemIndex = inventory.findIndex(i => i.id === editingItemId);
+                if (itemIndex !== -1) {
+                    inventory[itemIndex] = {
+                        ...inventory[itemIndex],
+                        ...itemData,
+                        dateModified: new Date().toLocaleDateString('id-ID')
+                    };
+                    
+                    showNotification('✅ Perubahan berhasil disimpan!', 'success');
+                    
+                    // Reset edit mode
+                    resetEditMode();
+                }
+            } else {
+                // Add new item
+                const newItem = {
+                    id: itemCounter++,
+                    code: `SPR${String(itemCounter - 1).padStart(4, '0')}`,
+                    ...itemData,
+                    dateAdded: new Date().toLocaleDateString('id-ID')
+                };
+
+                inventory.push(newItem);
+                showNotification('✅ Barang baru berhasil ditambahkan!', 'success');
+            }
+
+            // Save and update
+            saveToLocalStorage();
+            displayInventory();
+            updateStatistics();
+            updateBarcodeSelect();
+            
+            // Reset form
+            document.getElementById('addItemForm').reset();
+        }
+
+        // Delete item
+        function deleteItem(id) {
+            if (confirm('Apakah Anda yakin ingin menghapus barang ini?')) {
+                inventory = inventory.filter(item => item.id !== id);
+                saveToLocalStorage();
+                displayInventory();
+                updateStatistics();
+                updateBarcodeSelect();
+                showNotification('Barang berhasil dihapus!', 'success');
+            }
+        }
+
+        // Save to localStorage
+        function saveToLocalStorage() {
+            localStorage.setItem('inventory', JSON.stringify(inventory));
+            localStorage.setItem('itemCounter', itemCounter.toString());
+        }
+
+        // Show notification
+        function showNotification(message, type) {
             const notification = document.getElementById('notification');
             notification.textContent = message;
-            notification.className = `notification ${type} show`;
-            
+            notification.className = `notification ${type}`;
+            notification.classList.add('show');
+
             setTimeout(() => {
                 notification.classList.remove('show');
             }, 3000);
         }
 
-        // Close modal when clicking outside
-        document.addEventListener('click', function(e) {
-            const modal = document.getElementById('editModal');
-            if (e.target === modal) {
-                closeEditModal();
+        // Close tips card
+        function closeTips() {
+            const tipsCard = document.getElementById('tipsCard');
+            tipsCard.style.display = 'none';
+            localStorage.setItem('tipsHidden', 'true');
+        }
+
+        // Open help modal
+        function openHelpModal() {
+            document.getElementById('helpModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Close help modal
+        function closeHelpModal() {
+            document.getElementById('helpModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Check if tips should be hidden
+        document.addEventListener('DOMContentLoaded', function() {
+            if (localStorage.getItem('tipsHidden') === 'true') {
+                document.getElementById('tipsCard').style.display = 'none';
             }
         });
-
-        // Edit Mode Functions
-        function toggleEditMode() {
-            isEditMode = !isEditMode;
-            const appContainer = document.querySelector('.app-container');
-            const editBtn = document.getElementById('editModeBtn');
-            const editBtnText = editBtn.querySelector('span:last-child');
-            
-            if (isEditMode) {
-                appContainer.classList.add('edit-mode');
-                editBtn.classList.add('btn-edit-active');
-                editBtnText.textContent = 'Keluar Edit';
-                showNotification('Mode Edit Aktif - Anda dapat mengedit data', 'success');
-            } else {
-                appContainer.classList.remove('edit-mode');
-                editBtn.classList.remove('btn-edit-active');
-                editBtnText.textContent = 'Mode Edit';
-                showNotification('Mode Edit Dinonaktifkan', 'success');
-            }
-        }
-        
-        function saveAllData() {
-            const saveBtn = document.getElementById('saveDataBtn');
-            const originalText = saveBtn.querySelector('span:last-child').textContent;
-            
-            // Show loading state
-            saveBtn.querySelector('span:last-child').textContent = 'Menyimpan...';
-            saveBtn.disabled = true;
-            
-            // Simulate save process
-            setTimeout(() => {
-                // Save to localStorage (already done automatically, but we can add backup)
-                try {
-                    localStorage.setItem('saprasItems', JSON.stringify(items));
-                    localStorage.setItem('saprasBackup', JSON.stringify({
-                        items: items,
-                        timestamp: new Date().toISOString(),
-                        version: '1.0'
-                    }));
-                    
-                    // Success animation
-                    saveBtn.classList.add('save-success');
-                    saveBtn.querySelector('span:last-child').textContent = 'Tersimpan!';
-                    
-                    setTimeout(() => {
-                        saveBtn.classList.remove('save-success');
-                        saveBtn.querySelector('span:last-child').textContent = originalText;
-                        saveBtn.disabled = false;
-                    }, 2000);
-                    
-                    showNotification('Semua data berhasil disimpan!', 'success');
-                    
-                } catch (error) {
-                    saveBtn.querySelector('span:last-child').textContent = 'Gagal!';
-                    setTimeout(() => {
-                        saveBtn.querySelector('span:last-child').textContent = originalText;
-                        saveBtn.disabled = false;
-                    }, 2000);
-                    
-                    showNotification('Gagal menyimpan data!', 'error');
-                }
-            }, 1500);
-        }
-
-        // Advanced Features Functions
-        function openBulkImport() {
-            document.getElementById('bulkImportModal').classList.add('active');
-        }
-        
-        function closeBulkImportModal() {
-            document.getElementById('bulkImportModal').classList.remove('active');
-            document.getElementById('csvData').value = '';
-        }
-        
-        function processBulkImport() {
-            const csvData = document.getElementById('csvData').value.trim();
-            if (!csvData) {
-                showNotification('Silakan masukkan data CSV!', 'error');
-                return;
-            }
-            
-            try {
-                const lines = csvData.split('\n');
-                let importedCount = 0;
-                
-                for (let i = 0; i < lines.length; i++) {
-                    const line = lines[i].trim();
-                    if (!line) continue;
-                    
-                    // Parse CSV line (simple parsing)
-                    const values = line.split(',').map(val => val.replace(/"/g, '').trim());
-                    
-                    if (values.length >= 6) {
-                        const category = values[1] || 'ELK';
-                        const newItem = {
-                            id: generateId(),
-                            code: generateCode(category),
-                            name: values[0] || 'Barang Baru',
-                            category: category,
-                            location: values[2] || 'LAB',
-                            condition: values[3] || 'Baik',
-                            quantity: parseInt(values[4]) || 1,
-                            price: parseInt(values[5]) || 0,
-                            funding: values[6] || 'BOS',
-                            notes: values[7] || '',
-                            date: new Date().toISOString().split('T')[0]
-                        };
-                        
-                        items.push(newItem);
-                        importedCount++;
-                    }
-                }
-                
-                if (importedCount > 0) {
-                    saveItems();
-                    renderItems();
-                    updateStatistics();
-                    closeBulkImportModal();
-                    showNotification(`Berhasil import ${importedCount} barang!`, 'success');
-                } else {
-                    showNotification('Tidak ada data valid untuk diimport!', 'error');
-                }
-                
-            } catch (error) {
-                showNotification('Error parsing CSV: ' + error.message, 'error');
-            }
-        }
-        
-        function openReportGenerator() {
-            document.getElementById('reportModal').classList.add('active');
-        }
-        
-        function closeReportModal() {
-            document.getElementById('reportModal').classList.remove('active');
-        }
-        
-        function generateReport() {
-            const reportType = document.getElementById('reportType').value;
-            const reportFormat = document.getElementById('reportFormat').value;
-            
-            let reportData = '';
-            let reportTitle = '';
-            
-            switch (reportType) {
-                case 'summary':
-                    reportTitle = 'Ringkasan Inventaris';
-                    reportData = generateSummaryReport();
-                    break;
-                case 'category':
-                    reportTitle = 'Laporan per Kategori';
-                    reportData = generateCategoryReport();
-                    break;
-                case 'location':
-                    reportTitle = 'Laporan per Lokasi';
-                    reportData = generateLocationReport();
-                    break;
-                case 'condition':
-                    reportTitle = 'Laporan Kondisi Barang';
-                    reportData = generateConditionReport();
-                    break;
-                case 'value':
-                    reportTitle = 'Laporan Nilai Aset';
-                    reportData = generateValueReport();
-                    break;
-            }
-            
-            if (reportFormat === 'html') {
-                openReportWindow(reportTitle, reportData);
-            } else if (reportFormat === 'csv') {
-                copyToClipboard(reportData, 'CSV');
-            } else if (reportFormat === 'json') {
-                copyToClipboard(JSON.stringify(reportData, null, 2), 'JSON');
-            }
-            
-            closeReportModal();
-        }
-        
-        function generateSummaryReport() {
-            const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
-            const totalValue = items.reduce((sum, item) => sum + ((item.price || 0) * item.quantity), 0);
-            const categories = [...new Set(items.map(item => item.category))];
-            const locations = [...new Set(items.map(item => item.location))];
-            
-            return `
-                <div class="report-summary">
-                    <h2>Ringkasan Inventaris</h2>
-                    <div class="summary-stats">
-                        <div class="stat-item">
-                            <strong>Total Barang:</strong> ${totalItems} unit
-                        </div>
-                        <div class="stat-item">
-                            <strong>Total Nilai Aset:</strong> ${formatCurrency(totalValue)}
-                        </div>
-                        <div class="stat-item">
-                            <strong>Jumlah Kategori:</strong> ${categories.length}
-                        </div>
-                        <div class="stat-item">
-                            <strong>Jumlah Lokasi:</strong> ${locations.length}
-                        </div>
-                    </div>
-                    
-                    <h3>Detail per Kategori</h3>
-                    <table class="report-table">
-                        <thead>
-                            <tr>
-                                <th>Kategori</th>
-                                <th>Jumlah Barang</th>
-                                <th>Total Nilai</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${categories.map(cat => {
-                                const catItems = items.filter(item => item.category === cat);
-                                const catTotal = catItems.reduce((sum, item) => sum + item.quantity, 0);
-                                const catValue = catItems.reduce((sum, item) => sum + ((item.price || 0) * item.quantity), 0);
-                                return `
-                                    <tr>
-                                        <td>${cat}</td>
-                                        <td>${catTotal}</td>
-                                        <td>${formatCurrency(catValue)}</td>
-                                    </tr>
-                                `;
-                            }).join('')}
-                        </tbody>
-                    </table>
-                </div>
-            `;
-        }
-        
-        function generateCategoryReport() {
-            const categories = [...new Set(items.map(item => item.category))];
-            
-            return categories.map(category => {
-                const categoryItems = items.filter(item => item.category === category);
-                const totalValue = categoryItems.reduce((sum, item) => sum + ((item.price || 0) * item.quantity), 0);
-                
-                return `
-                    <div class="category-section">
-                        <h3>Kategori: ${category}</h3>
-                        <p><strong>Total Barang:</strong> ${categoryItems.length} jenis, ${categoryItems.reduce((sum, item) => sum + item.quantity, 0)} unit</p>
-                        <p><strong>Total Nilai:</strong> ${formatCurrency(totalValue)}</p>
-                        
-                        <table class="report-table">
-                            <thead>
-                                <tr>
-                                    <th>Kode</th>
-                                    <th>Nama</th>
-                                    <th>Lokasi</th>
-                                    <th>Kondisi</th>
-                                    <th>Jumlah</th>
-                                    <th>Harga</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${categoryItems.map(item => `
-                                    <tr>
-                                        <td>${item.code}</td>
-                                        <td>${item.name}</td>
-                                        <td>${item.location}</td>
-                                        <td>${item.condition}</td>
-                                        <td>${item.quantity}</td>
-                                        <td>${formatCurrency(item.price || 0)}</td>
-                                    </tr>
-                                `).join('')}
-                            </tbody>
-                        </table>
-                    </div>
-                `;
-            }).join('');
-        }
-        
-        function generateLocationReport() {
-            const locations = [...new Set(items.map(item => item.location))];
-            
-            return locations.map(location => {
-                const locationItems = items.filter(item => item.location === location);
-                const totalValue = locationItems.reduce((sum, item) => sum + ((item.price || 0) * item.quantity), 0);
-                
-                return `
-                    <div class="location-section">
-                        <h3>Lokasi: ${location}</h3>
-                        <p><strong>Total Barang:</strong> ${locationItems.length} jenis, ${locationItems.reduce((sum, item) => sum + item.quantity, 0)} unit</p>
-                        <p><strong>Total Nilai:</strong> ${formatCurrency(totalValue)}</p>
-                        
-                        <table class="report-table">
-                            <thead>
-                                <tr>
-                                    <th>Kode</th>
-                                    <th>Nama</th>
-                                    <th>Kategori</th>
-                                    <th>Kondisi</th>
-                                    <th>Jumlah</th>
-                                    <th>Harga</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${locationItems.map(item => `
-                                    <tr>
-                                        <td>${item.code}</td>
-                                        <td>${item.name}</td>
-                                        <td>${item.category}</td>
-                                        <td>${item.condition}</td>
-                                        <td>${item.quantity}</td>
-                                        <td>${formatCurrency(item.price || 0)}</td>
-                                    </tr>
-                                `).join('')}
-                            </tbody>
-                        </table>
-                    </div>
-                `;
-            }).join('');
-        }
-        
-        function generateConditionReport() {
-            const conditions = ['Baik', 'Rusak Ringan', 'Rusak Berat'];
-            
-            return conditions.map(condition => {
-                const conditionItems = items.filter(item => item.condition === condition);
-                const totalValue = conditionItems.reduce((sum, item) => sum + ((item.price || 0) * item.quantity), 0);
-                
-                return `
-                    <div class="condition-section">
-                        <h3>Kondisi: ${condition}</h3>
-                        <p><strong>Total Barang:</strong> ${conditionItems.length} jenis, ${conditionItems.reduce((sum, item) => sum + item.quantity, 0)} unit</p>
-                        <p><strong>Total Nilai:</strong> ${formatCurrency(totalValue)}</p>
-                        
-                        <table class="report-table">
-                            <thead>
-                                <tr>
-                                    <th>Kode</th>
-                                    <th>Nama</th>
-                                    <th>Kategori</th>
-                                    <th>Lokasi</th>
-                                    <th>Jumlah</th>
-                                    <th>Harga</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${conditionItems.map(item => `
-                                    <tr>
-                                        <td>${item.code}</td>
-                                        <td>${item.name}</td>
-                                        <td>${item.category}</td>
-                                        <td>${item.location}</td>
-                                        <td>${item.quantity}</td>
-                                        <td>${formatCurrency(item.price || 0)}</td>
-                                    </tr>
-                                `).join('')}
-                            </tbody>
-                        </table>
-                    </div>
-                `;
-            }).join('');
-        }
-        
-        function generateValueReport() {
-            const sortedItems = [...items].sort((a, b) => ((b.price || 0) * b.quantity) - ((a.price || 0) * a.quantity));
-            const totalValue = items.reduce((sum, item) => sum + ((item.price || 0) * item.quantity), 0);
-            
-            return `
-                <div class="value-report">
-                    <h2>Laporan Nilai Aset</h2>
-                    <p><strong>Total Nilai Keseluruhan:</strong> ${formatCurrency(totalValue)}</p>
-                    
-                    <h3>Barang dengan Nilai Tertinggi</h3>
-                    <table class="report-table">
-                        <thead>
-                            <tr>
-                                <th>Ranking</th>
-                                <th>Kode</th>
-                                <th>Nama</th>
-                                <th>Kategori</th>
-                                <th>Lokasi</th>
-                                <th>Jumlah</th>
-                                <th>Harga Satuan</th>
-                                <th>Total Nilai</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${sortedItems.map((item, index) => `
-                                <tr>
-                                    <td>${index + 1}</td>
-                                    <td>${item.code}</td>
-                                    <td>${item.name}</td>
-                                    <td>${item.category}</td>
-                                    <td>${item.location}</td>
-                                    <td>${item.quantity}</td>
-                                    <td>${formatCurrency(item.price || 0)}</td>
-                                    <td><strong>${formatCurrency((item.price || 0) * item.quantity)}</strong></td>
-                                </tr>
-                            `).join('')}
-                        </tbody>
-                    </table>
-                </div>
-            `;
-        }
-        
-        function openReportWindow(title, content) {
-            const reportWindow = window.open('', '_blank');
-            reportWindow.document.write(`
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <title>${title} - SAPRAS Digital</title>
-                    <style>
-                        body { 
-                            font-family: Arial, sans-serif; 
-                            margin: 20px; 
-                            line-height: 1.6;
-                        }
-                        .report-header {
-                            text-align: center;
-                            border-bottom: 2px solid #333;
-                            padding-bottom: 20px;
-                            margin-bottom: 30px;
-                        }
-                        .report-table {
-                            width: 100%;
-                            border-collapse: collapse;
-                            margin: 20px 0;
-                        }
-                        .report-table th,
-                        .report-table td {
-                            border: 1px solid #ddd;
-                            padding: 8px;
-                            text-align: left;
-                        }
-                        .report-table th {
-                            background-color: #f2f2f2;
-                            font-weight: bold;
-                        }
-                        .summary-stats {
-                            display: grid;
-                            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-                            gap: 15px;
-                            margin: 20px 0;
-                        }
-                        .stat-item {
-                            padding: 15px;
-                            background: #f8f9fa;
-                            border-radius: 5px;
-                            border-left: 4px solid #007bff;
-                        }
-                        .category-section,
-                        .location-section,
-                        .condition-section {
-                            margin: 30px 0;
-                            page-break-inside: avoid;
-                        }
-                        @media print {
-                            body { margin: 0; }
-                            .no-print { display: none; }
-                        }
-                    </style>
-                </head>
-                <body>
-                    <div class="report-header">
-                        <h1>SMK NASIONAL BANDUNG</h1>
-                        <h2>${title}</h2>
-                        <p>Generated on: ${new Date().toLocaleDateString('id-ID', { 
-                            weekday: 'long', 
-                            year: 'numeric', 
-                            month: 'long', 
-                            day: 'numeric' 
-                        })}</p>
-                    </div>
-                    
-                    ${content}
-                    
-                    <div class="no-print" style="margin-top: 30px; text-align: center;">
-                        <button onclick="window.print()" style="padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">
-                            🖨️ Print Laporan
-                        </button>
-                    </div>
-                </body>
-                </html>
-            `);
-        }
-        
-        function copyToClipboard(data, format) {
-            try {
-                navigator.clipboard.writeText(data);
-                showNotification(`Data ${format} berhasil disalin ke clipboard!`, 'success');
-            } catch (err) {
-                // Fallback method
-                const textArea = document.createElement('textarea');
-                textArea.value = data;
-                textArea.style.position = 'fixed';
-                textArea.style.top = '50%';
-                textArea.style.left = '50%';
-                textArea.style.transform = 'translate(-50%, -50%)';
-                textArea.style.width = '80%';
-                textArea.style.height = '60%';
-                textArea.style.zIndex = '9999';
-                textArea.style.background = 'white';
-                textArea.style.border = '2px solid #3b82f6';
-                textArea.style.borderRadius = '8px';
-                textArea.style.padding = '1rem';
-                
-                document.body.appendChild(textArea);
-                textArea.select();
-                textArea.focus();
-                
-                showNotification(`Silakan copy manual data ${format} dari text area!`, 'success');
-                
-                setTimeout(() => {
-                    if (document.body.contains(textArea)) {
-                        document.body.removeChild(textArea);
-                    }
-                }, 10000);
-            }
-        }
-        
-        function openMaintenanceSchedule() {
-            document.getElementById('maintenanceModal').classList.add('active');
-            generateMaintenanceSchedule();
-        }
-        
-        function closeMaintenanceModal() {
-            document.getElementById('maintenanceModal').classList.remove('active');
-        }
-        
-        function generateMaintenanceSchedule() {
-            const maintenanceList = document.getElementById('maintenanceList');
-            const urgentItems = items.filter(item => item.condition === 'Rusak Berat');
-            const scheduledItems = items.filter(item => item.condition === 'Rusak Ringan');
-            const goodItems = items.filter(item => item.condition === 'Baik');
-            
-            document.getElementById('urgentMaintenance').textContent = urgentItems.length;
-            document.getElementById('scheduledMaintenance').textContent = scheduledItems.length;
-            document.getElementById('completedMaintenance').textContent = goodItems.length;
-            
-            const allMaintenanceItems = [
-                ...urgentItems.map(item => ({ ...item, priority: 'urgent', status: 'Perlu Segera' })),
-                ...scheduledItems.map(item => ({ ...item, priority: 'scheduled', status: 'Terjadwal' })),
-                ...goodItems.slice(0, 5).map(item => ({ ...item, priority: 'completed', status: 'Maintenance Rutin' }))
-            ];
-            
-            maintenanceList.innerHTML = allMaintenanceItems.map(item => `
-                <div class="maintenance-item p-4 border rounded-lg ${item.priority === 'urgent' ? 'border-red-300 bg-red-50' : item.priority === 'scheduled' ? 'border-yellow-300 bg-yellow-50' : 'border-green-300 bg-green-50'}">
-                    <div class="flex items-center justify-between">
-                        <div class="flex-1">
-                            <div class="font-semibold text-gray-800">${item.name}</div>
-                            <div class="text-sm text-gray-600">Kode: ${item.code} | Lokasi: ${item.location}</div>
-                            <div class="text-sm">
-                                <span class="badge badge-${item.priority === 'urgent' ? 'danger' : item.priority === 'scheduled' ? 'warning' : 'success'}">${item.status}</span>
-                            </div>
-                        </div>
-                        <div class="text-right">
-                            <div class="text-sm font-medium ${item.priority === 'urgent' ? 'text-red-600' : item.priority === 'scheduled' ? 'text-yellow-600' : 'text-green-600'}">
-                                ${item.condition}
-                            </div>
-                            <div class="text-xs text-gray-500">
-                                ${item.priority === 'urgent' ? '⚠️ Prioritas Tinggi' : item.priority === 'scheduled'
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96ab43f4615a6cfd',t:'MTc1NDQ0OTAzMi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
